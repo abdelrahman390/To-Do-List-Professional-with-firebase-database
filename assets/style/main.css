@@ -1,0 +1,1047 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: arial;
+}
+
+:root {
+  --primary-color: #16184d;
+  --secondary-color: #296267;
+  --third-color: #00407f;
+  --fourth-color: #007549;
+  --fifth-color: #f32727;
+}
+
+section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--primary-color);
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+section header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  padding: 20px 0;
+  background-color: var(--third-color);
+  justify-content: center;
+}
+section header .max-width {
+  width: 85%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+section header .max-width h3 {
+  color: white;
+}
+section main {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 120px);
+}
+section main .slider {
+  height: 100vh;
+  position: fixed;
+  width: auto;
+  background-color: var(--secondary-color);
+  -webkit-transform: translateX(-150px);
+          transform: translateX(-150px);
+  -webkit-transition: 1s;
+  transition: 1s;
+  z-index: 3;
+}
+section main .slider.open {
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+}
+section main .slider .boxes {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  gap: 20px;
+  padding: 40px 20px;
+  height: 80%;
+}
+section main .slider .boxes .top {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 20px;
+}
+section main .slider .boxes .top .add-task-photo {
+  display: none;
+}
+section main .slider .boxes .bottom {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 15px;
+}
+section main .slider .boxes .bottom .delete-history {
+  background-color: var(--third-color);
+}
+section main .slider .boxes .bottom .delete-history-photo {
+  display: none;
+}
+section main .slider .boxes button {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  border: navajowhite;
+  background-color: #e19900;
+  padding: 30px;
+  min-width: 150px;
+}
+section main .slider span {
+  width: 45px;
+  height: 30px;
+  position: absolute;
+  background-color: var(--secondary-color);
+  top: 0px;
+  right: -35px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  padding-right: 10px;
+}
+section main .tasks-container {
+  height: calc(100vh - 200px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+  width: 90%;
+  float: right;
+  padding: 40px 0;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  max-height: 76vh;
+  overflow-y: auto;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  position: relative;
+}
+section main .tasks-container .task-card {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  min-width: 230px;
+  height: auto;
+  background-color: var(--third-color);
+  padding: 20px 10px 5px;
+  border: 5px var(--fourth-color) solid;
+  border-radius: 8px;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  cursor: default;
+  max-width: 250px;
+  width: 100%;
+}
+section main .tasks-container .task-card[data-status=complete].on-edit::before {
+  width: 0 !important;
+  height: 0 !important;
+}
+section main .tasks-container .task-card[data-status=complete]::before {
+  content: "";
+  width: 104%;
+  height: 104%;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+}
+section main .tasks-container .task-card[data-status=complete] .task {
+  opacity: 0.5 !important;
+}
+section main .tasks-container .task-card[data-status=complete] .DoneAlarm {
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  padding: 5px;
+  color: white;
+  background-color: #42bb4a;
+  border-radius: 5px;
+  font-size: 17px;
+}
+section main .tasks-container .task-card button, section main .tasks-container .task-card input {
+  cursor: pointer;
+}
+section main .tasks-container .task-card .trash {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  background-color: rgba(255, 255, 255, 0.7803921569);
+  padding: 4px;
+  border-radius: 3px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  cursor: pointer;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
+section main .tasks-container .task-card .trash.open {
+  background-color: white;
+  width: 97%;
+}
+section main .tasks-container .task-card .trash.open img {
+  position: absolute;
+}
+section main .tasks-container .task-card .trash.open .settingBox {
+  display: block;
+}
+section main .tasks-container .task-card .trash img {
+  background-image: url("../imgs/settings.png");
+  top: 4px;
+  right: 4px;
+}
+section main .tasks-container .task-card .trash .settingBox {
+  display: none;
+  margin: 15px 0;
+}
+section main .tasks-container .task-card .trash .settingBox .deleteBox {
+  display: none;
+  position: absolute;
+  z-index: 3;
+  background-color: white;
+  width: 97%;
+  top: 0;
+  right: 0;
+  padding: 4px;
+  border-radius: 3px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 12px;
+}
+section main .tasks-container .task-card .trash .settingBox .deleteBox.open {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+section main .tasks-container .task-card .trash .settingBox .delete {
+  border: none;
+  background-color: var(--fifth-color);
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+section main .tasks-container .task-card .trash .settingBox .edit, section main .tasks-container .task-card .trash .settingBox .no {
+  border: none;
+  background-color: var(--secondary-color);
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+section main .tasks-container .task-card .title {
+  color: white;
+  border: none;
+  border-bottom: 3px solid #ffffff;
+  padding: 10px;
+  text-align: center;
+  font-size: 23px;
+  background-color: transparent;
+}
+section main .tasks-container .task-card input.title {
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section main .tasks-container .task-card input.title:focus-visible {
+  outline: none;
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section main .tasks-container .task-card input.title::-webkit-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card input.title::-moz-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card input.title:-ms-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card input.title::-ms-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card input.title::placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container {
+  color: white;
+  float: right;
+  padding: 0px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: right;
+}
+section main .tasks-container .task-card .container .task {
+  padding: 20px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  cursor: pointer;
+}
+section main .tasks-container .task-card .container .task[data-status=complete] .TaskData {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont .num {
+  min-width: 21px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont .TaskData {
+  margin: 0 10px 0 5px;
+  text-align: left;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content:focus-visible {
+  outline: none;
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content::-webkit-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content::-moz-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content:-ms-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content::-ms-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content::placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData:focus-visible {
+  outline: none;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData::-webkit-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData::-moz-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData:-ms-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData::-ms-input-placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .upperTaskCont .cont input.TaskData::placeholder {
+  font-size: 30px;
+}
+section main .tasks-container .task-card .container .task .bottomTaskCont {
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  -webkit-transition-timing-function: linear;
+          transition-timing-function: linear;
+}
+section main .tasks-container .task-card .container .task .bottomTaskCont h1 {
+  font-size: 15px;
+  text-align: left;
+  font-weight: 400;
+}
+section main .tasks-container .task-card .container .task .bottomTaskCont h1.complete_date {
+  margin-top: 2px;
+}
+section main .tasks-container .task-card .container .task.open .bottomTaskCont {
+  max-height: 150px;
+  margin: 15px 0 0;
+  border-top: 1px solid var(--primary-color);
+  padding-top: 15px;
+}
+section main .tasks-container .task-card .container .task:not(:first-child) {
+  border-top: 1px solid #8d9bff;
+  padding-top: 10px;
+}
+section main .tasks-container .task-card .container .add-task {
+  -ms-flex-line-pack: center;
+      align-content: center;
+  text-align: center;
+  width: 100%;
+  border: none;
+  background-color: white;
+  padding: 5px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+section main .tasks-container .task-card .container .deleteImg {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+section main .tasks-container .task-card .addTaskButton {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  background-color: var(--fourth-color);
+  margin: 10px 0;
+}
+section main .tasks-container .task-card .DoneButton {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  background-color: var(--primary-color);
+  width: 65%;
+  float: right;
+}
+section main .tasks-container .task-card .cancel-button {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  background-color: var(--fifth-color);
+  width: 30%;
+  padding: 15px 10px;
+}
+section main .tasks-container .task-card .date, section main .tasks-container .task-card .complete-date {
+  color: #57e9a7;
+  padding: 10px;
+  background-color: #16184d;
+  border-radius: 5px;
+  text-align: center;
+  margin: 5px 0;
+}
+section main .tasks-container .task-card .DoneAlarm {
+  display: none;
+}
+section main .deleted-task-main {
+  background-color: #91a0ad;
+  width: 96vw;
+  height: 0;
+  -webkit-transition: 1s;
+  transition: 1s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: absolute;
+  top: 0;
+  right: 0;
+  overflow: hidden;
+  gap: 25px;
+}
+section main .deleted-task-main.open {
+  height: 88vh;
+}
+section main .deleted-task-main > .title {
+  margin-top: 10px;
+  color: white;
+  padding: 10px;
+  border: 3px solid #025fab;
+  cursor: default;
+}
+section main .deleted-task-main .exit {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 15px 30px;
+  background-color: var(--fifth-color);
+}
+section main .deleted-task-main .deleted-tasks-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow-y: auto;
+  padding-bottom: 70px;
+}
+section main .deleted-task-main .deleted-tasks-container .task-card .modified-date, section main .deleted-task-main .deleted-tasks-container .task-card .deleted-date, section main .deleted-task-main .deleted-tasks-container .task-card .complete-date {
+  color: #57e9a7;
+  padding: 10px;
+  background-color: #16184d;
+  border-radius: 5px;
+  text-align: center;
+  margin: 5px;
+}
+section main .deleted-task-main .deleted-tasks-container .task-card .restore {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  padding: 15px;
+  color: white;
+  font-size: 17px;
+  background-color: var(--fourth-color);
+}
+section .overlay {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7607843137);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 40px;
+  z-index: 2;
+}
+section .overlay .task-card {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  min-width: 230px;
+  height: auto;
+  background-color: var(--third-color);
+  padding: 20px 10px 5px;
+  border: 5px var(--fourth-color) solid;
+  border-radius: 8px;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  cursor: default;
+  max-width: 250px;
+  width: 100%;
+}
+section .overlay .task-card .container {
+  color: white;
+  float: right;
+  padding: 0px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: right;
+}
+section .overlay .task-card .container .task {
+  padding: 20px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  cursor: pointer;
+}
+section .overlay .task-card .container .task .upperTaskCont {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 100%;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont .num {
+  min-width: 21px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont .TaskData {
+  margin: 0 10px 0 5px;
+  text-align: left;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content:focus-visible {
+  outline: none;
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content::-webkit-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content::-moz-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content:-ms-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content::-ms-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.task-content::placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData:focus-visible {
+  outline: none;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData::-webkit-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData::-moz-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData:-ms-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData::-ms-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .task .upperTaskCont .cont input.TaskData::placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card .container .add-task {
+  -ms-flex-line-pack: center;
+      align-content: center;
+  text-align: center;
+  width: 100%;
+  border: none;
+  background-color: white;
+  padding: 5px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+section .overlay .task-card .container .deleteImg {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+section .overlay .task-card .title {
+  color: white;
+  border: none;
+  border-bottom: 3px solid #ffffff;
+  padding: 10px;
+  text-align: center;
+  font-size: 23px;
+  background-color: transparent;
+}
+section .overlay .task-card input.title {
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section .overlay .task-card input.title:focus-visible {
+  outline: none;
+  border-bottom: 3px dotted var(--fourth-color);
+}
+section .overlay .task-card input.title::-webkit-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card input.title::-moz-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card input.title:-ms-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card input.title::-ms-input-placeholder {
+  font-size: 30px;
+}
+section .overlay .task-card input.title::placeholder {
+  font-size: 30px;
+}
+section .overlay .done-task {
+  border: none;
+  background-color: var(--fourth-color);
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 25px;
+  cursor: pointer;
+  color: white;
+}
+section .overlay .cancel-button {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  background-color: var(--fifth-color);
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+section .overlay .alertBox {
+  width: 50%;
+  height: 50%;
+  background-color: var(--third-color);
+  border: 6px solid var(--fourth-color);
+  border-radius: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+section .overlay .alertBox .mainBox {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 30px;
+}
+section .overlay .alertBox .mainBox .text {
+  color: white;
+  font-size: 40px;
+}
+section .overlay .alertBox .mainBox .buttonsBox {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+}
+section .overlay .alertBox .mainBox .buttonsBox .noButton {
+  border: none;
+  background-color: var(--fifth-color);
+  padding: 18px 40px;
+  color: white;
+  font-size: 26px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+section .overlay .alertBox .mainBox .buttonsBox .confirmButton {
+  border: none;
+  background-color: var(--fourth-color);
+  padding: 18px 40px;
+  color: white;
+  font-size: 26px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+section footer {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 9px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: white;
+  padding: 15px 0px;
+  background-color: #12132e;
+  z-index: 2;
+}
+section footer a {
+  color: white;
+  text-decoration: underline;
+  font-size: 18px;
+}
+
+@media screen and (max-width: 320px) {
+  .task-card .task {
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+  }
+  .task-card .task .TaskData {
+    width: 80%;
+  }
+  section .deleted-task-main > .title {
+    margin-right: 20px;
+  }
+  section .deleted-task-main .exit {
+    padding: 10px 10px !important;
+  }
+  section .overlay .text {
+    font-size: 25px !important;
+  }
+}
+@media screen and (max-width: 600px) {
+  section header .max-width {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 10px;
+  }
+  section main .slider {
+    position: unset;
+    height: auto;
+    width: 100vw;
+    -webkit-transform: none !important;
+            transform: none !important;
+    background-color: transparent;
+    margin-top: 15px;
+  }
+  section main .slider .boxes {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+    padding: 10px;
+    padding-bottom: 5px;
+  }
+  section main .slider .boxes .top .add-task {
+    display: none;
+  }
+  section main .slider .boxes .top .add-task-photo {
+    display: block;
+  }
+  section main .slider .boxes .bottom {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+  }
+  section main .slider .boxes .bottom .delete-history {
+    display: none;
+  }
+  section main .slider .boxes .bottom .delete-history-photo {
+    display: block;
+  }
+  section main .slider .boxes .bottom .clear-tasks {
+    padding: 5px;
+    min-width: unset;
+  }
+  section main .slider .boxes img {
+    width: 50px;
+  }
+  section main .slider span {
+    display: none;
+  }
+  section main .tasks-container {
+    width: 100%;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    padding: 0;
+  }
+  .task-card {
+    width: 65%;
+    min-width: unset;
+  }
+  .task-card:first-child {
+    margin-top: 20px;
+  }
+  .task-card:last-child {
+    margin-bottom: 20px;
+  }
+  section main .deleted-task-main.open {
+    width: 100vw;
+    height: 78vh;
+  }
+  section main .deleted-task-main.open .exit {
+    padding: 11px 15px !important;
+  }
+  section main .deleted-task-main.open .deleted-tasks-container {
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  section footer h2 {
+    font-size: 10px;
+  }
+  section footer a {
+    font-size: 11px;
+  }
+  section .overlay .alertBox {
+    width: auto;
+    height: auto;
+    border: 4px solid var(--fourth-color);
+  }
+  section .overlay .alertBox .mainBox {
+    padding: 15px;
+  }
+  section .overlay .alertBox .mainBox .text {
+    font-size: 30px;
+  }
+  section .overlay .alertBox .mainBox .buttonsBox button {
+    padding: 0px 25px !important;
+    height: 50px;
+  }
+}
