@@ -983,7 +983,19 @@ function handleEveryNestedTaskData() {
             element.classList.toggle("open")
         })
 
+        // Create a ResizeObserver instance
+        let resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+            // let height = entry.contentRect.height;
+            // console.log('Element height changed to: ' + height + 'px');
+            handleTasksViewInPage()
+        }
+        });
+
+        resizeObserver.observe(element);
+
     });
+
 }
 
 // import Masonry from "masonry-layout";
