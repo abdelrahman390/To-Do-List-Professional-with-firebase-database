@@ -1047,6 +1047,9 @@ section footer a {
   section .overlay .alertBox .mainBox .text {
     font-size: 30px;
   }
+  section .overlay .alertBox .mainBox .text .cont input {
+    width: 100%;
+  }
   section .overlay .alertBox .mainBox .buttonsBox button {
     padding: 0px 25px !important;
     height: 50px;
