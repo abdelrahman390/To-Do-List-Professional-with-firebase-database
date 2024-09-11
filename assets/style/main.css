@@ -719,6 +719,7 @@ section .overlay .task-card .container .task .upperTaskCont .cont .num {
 section .overlay .task-card .container .task .upperTaskCont .cont .TaskData {
   margin: 0 10px 0 5px;
   text-align: left;
+  width: 100%;
 }
 section .overlay .task-card .container .task .upperTaskCont .cont input.task-content {
   background-color: transparent;
@@ -1046,9 +1047,6 @@ section footer a {
   }
   section .overlay .alertBox .mainBox .text {
     font-size: 30px;
-  }
-  section .overlay .alertBox .mainBox .text .cont input {
-    width: 100%;
   }
   section .overlay .alertBox .mainBox .buttonsBox button {
     padding: 0px 25px !important;
