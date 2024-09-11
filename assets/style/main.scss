@@ -788,6 +788,11 @@ section{
                     padding: 15px;
                     & .text{
                         font-size: 30px;
+                        & .cont{
+                            & input{
+                                width: 100%;
+                            }
+                        }
                     }
                     & .buttonsBox{
                         & button{
