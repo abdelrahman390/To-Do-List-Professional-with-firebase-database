@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore , collection, addDoc, onSnapshot  ,doc , getDoc , getDocs, setDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+import { getFirestore , collection, addDoc, onSnapshot, deleteDoc ,doc , getDoc , getDocs, setDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
 let module = {}
 
 
@@ -20,13 +20,54 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore
 const db = getFirestore(app);  // for modern Firebase version 9+
 
-// // Add a new document in collection "Tasks"
+// function convertData(){
+//     let id = '978'
+//     let data = {
+//         "title": "حجات لتحضيرات السفر للدراسه",
+//         "date": "8/11/2024, 4:27:18 PM",
+//         "data": [
+//             [
+//                 {
+//                     "num": "1 -",
+//                     "content": "test As لتقويه المجموع بتاعي في ثانوي",
+//                     "status": "false"
+//                 },
+//                 {
+//                     "num": "2 -",
+//                     "content": "take ilets course",
+//                     "status": "false"
+//                 }
+//             ]
+//         ],
+//         "completeDate": "not-completed"
+//     }
+
+
+//     let newData = {}
+//     for (let i = 0; i < data.data[0].length; i++) {
+//         newData[i] = data.data[0][i]
+//     }
+
+//     let NewTask = {
+//         title: `${data.title}`,
+//         date: `${data.date}`,
+//         data: newData
+//     }
+//     console.log(NewTask)
+//     addTask(id, NewTask)
+
+// }
+// convertData()
+
+
+
+ // Add a new document in collection "Tasks"
 async function addTask(id, taskData) {
-    // console.log(id, taskData)
+    console.log(id, taskData)
     try {
         await setDoc(doc(db, "tasks", id), {
             id: id ,
-                taskData
+            taskData
         });
 
     } catch (error) {
@@ -58,6 +99,14 @@ async function getAllTasks() {
 }
 getAllTasks()
 
+async function deleteTaskFromDatabase(taskId) {
+    try {
+        console.log(taskId)
+        await deleteDoc(doc(db, "tasks", taskId));
+    } catch (error) {
+        console.error('Error adding user: ', error);
+    }
+}
 
 let tasksData,
     slider = document.querySelector("section main .slider"),
@@ -340,7 +389,7 @@ function tasksMain(){
     let DeleteTaskButton  = null;
 
     function createTask() {
-        console.log(window.innerWidth < 600)
+        // console.log(window.innerWidth < 600)
         if(window.innerWidth < 600){
             var addTaskButton = document.querySelector("section .add-task-photo");
         } else {
@@ -517,10 +566,12 @@ function tasksMain(){
                     }
                     sessionStorage.setItem("allTasks" , JSON.stringify(allTasks))
                 }
-                overlay.remove()
                 addDataToDataBase()
+                overlay.remove()
                 completeTasks()
                 handleTasksViewInPage()
+                addSettingToTasksBox()
+                tasksSetting()
             })
 
             // when press cancel button 
@@ -734,9 +785,7 @@ function tasksSetting(){
 
             function deleteTask() {
 
-                    // console.log("tets") // one time
                 DeleteButton.addEventListener("click", function(){
-
                     settingButton.parentElement.querySelector(".task-card .trash  .settingBox ").querySelector('.deleteBox').classList.toggle('open');
                     return;
                 }) 
@@ -747,11 +796,12 @@ function tasksSetting(){
     
                 confirmDelete.addEventListener("click", function(){
                     let elementId = settingButton.parentElement.parentElement.getAttribute('data-id')
-                    setDeletedTaskToLocalStorage(elementId)
-                    localStorage.removeItem(`${elementId}`)
+                    deleteTaskFromDatabase(elementId)
                     settingButton.parentElement.parentElement.remove()
-                    // restoreDeletedTasks()
-                    handleViewDeletedTask()
+                    handleTasksViewInPage()
+                    let allTasks = JSON.parse(sessionStorage.getItem("allTasks"));
+                    delete allTasks[elementId];
+                    sessionStorage.setItem("allTasks" , JSON.stringify(allTasks))
                 })
 
                 return;
@@ -985,9 +1035,7 @@ function tasksSetting(){
 }
 
 function handleEveryNestedTaskData() {
-
     let test = document.querySelectorAll(".tasks-container .task-card .container .task")
-
     test.forEach(element => {
         element.addEventListener("click", function (){
             element.classList.toggle("open")
@@ -1001,9 +1049,6 @@ function handleEveryNestedTaskData() {
             handleTasksViewInPage()
         }
         });
-
         resizeObserver.observe(element);
-
     });
-
 }
