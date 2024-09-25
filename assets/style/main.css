@@ -29,6 +29,7 @@ body {
   --fourth-color: #007549;
   --fifth-color: #f32727;
   --main-hight: 302px;
+  --tasks-hight: 302px;
 }
 
 section {
@@ -1480,7 +1481,7 @@ section main .slider span {
   padding-right: 10px;
 }
 section main .tasks-container {
-  height: var(--main-hight);
+  height: var(--tasks-hight);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

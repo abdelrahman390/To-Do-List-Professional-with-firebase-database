@@ -29,6 +29,7 @@ body{
     --fourth-color: #007549;
     --fifth-color: #f32727;
     --main-hight: 302px;
+    --tasks-hight: 302px;
 }
 
 @mixin button {
@@ -1107,7 +1108,7 @@ section{
         }
 
         & .tasks-container{
-            height: var(--main-hight);
+            height: var(--tasks-hight);
             display: flex;
             gap: 20px;
             width: 90%;
