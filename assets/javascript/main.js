@@ -1,8 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore , collection, addDoc, onSnapshot, deleteDoc ,doc , getDoc , getDocs, setDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+import { getFirestore , collection,getDoc, deleteDoc, doc, getDocs, setDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
 let module = {}
-
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -20,52 +19,12 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore
 const db = getFirestore(app);  // for modern Firebase version 9+
 
-// function convertData(){
-//     let id = '978'
-//     let data = {
-//         "title": "حجات لتحضيرات السفر للدراسه",
-//         "date": "8/11/2024, 4:27:18 PM",
-//         "data": [
-//             [
-//                 {
-//                     "num": "1 -",
-//                     "content": "test As لتقويه المجموع بتاعي في ثانوي",
-//                     "status": "false"
-//                 },
-//                 {
-//                     "num": "2 -",
-//                     "content": "take ilets course",
-//                     "status": "false"
-//                 }
-//             ]
-//         ],
-//         "completeDate": "not-completed"
-//     }
-
-
-//     let newData = {}
-//     for (let i = 0; i < data.data[0].length; i++) {
-//         newData[i] = data.data[0][i]
-//     }
-
-//     let NewTask = {
-//         title: `${data.title}`,
-//         date: `${data.date}`,
-//         data: newData
-//     }
-//     console.log(NewTask)
-//     addTask(id, NewTask)
-
-// }
-// convertData()
-
-
 
  // Add a new document in collection "Tasks"
 async function addTask(id, taskData) {
-    console.log(id, taskData)
+    let user = localStorage.getItem("user")
     try {
-        await setDoc(doc(db, "tasks", id), {
+        await setDoc(doc(db, `users/${user}/tasks/${id}`), {
             id: id ,
             taskData
         });
@@ -75,34 +34,28 @@ async function addTask(id, taskData) {
     }
 }
 
-async function getAllTasks() {
+async function addUser(userName, password) {
     try {
-        const usersCollection = collection(db, 'tasks');
-        const querySnapshot = await getDocs(usersCollection);
-        let allTasks = {};
-        querySnapshot.forEach((doc) => {
-            // console.log(`${doc.id} =>`, doc.data());
-            let id = doc.id;
-            let data = doc.data();
-            addTasksFromDataBase(id, data);
-            allTasks[id] = data
+        let date = new Date();
+        let addedDate = date.toLocaleString();
+        let id = date.getTime();
+        await setDoc(doc(db, "users", userName), {
+            userName: userName,
+            id: id,
+            password: password,
+            addedDate: addedDate,
+            tasks: {}
         });
-        sessionStorage.setItem("allTasks", JSON.stringify(allTasks))
-        tasksMain()
-        handleEveryNestedTaskData()
-        handleTasksViewInPage()
-        addSettingToTasksBox()
-        tasksSetting()
+        location.reload();
     } catch (error) {
-        console.error("Error getting documents: ", error);
+        console.error('Error adding user: ', error);
     }
 }
-getAllTasks()
 
 async function deleteTaskFromDatabase(taskId) {
     try {
-        console.log(taskId)
-        await deleteDoc(doc(db, "tasks", taskId));
+        let user = localStorage.getItem("user")
+        await deleteDoc(doc(db, `users/${user}/tasks/${taskId}`));
     } catch (error) {
         console.error('Error adding user: ', error);
     }
@@ -121,11 +74,226 @@ let tasksData,
     deleteTaskButton = document.querySelector("section main .slider .clear-tasks"),
     noButton = document.querySelector("section .overlay .alertBox .mainBox .buttonsBox .noButton"),
     confirmButton = document.querySelector("section .overlay .alertBox .mainBox .buttonsBox .confirmButton"),
-    settingButton ,
-    settingBox ,
-    deleteButton ,
-    editButton = null;
-    let running = false
+    settingButton,
+    ChangeLoginPageButton = document.querySelector(".container > .Register"),
+    settingBox,
+    deleteButton,
+    editButton = null,
+    running = false,
+    user;
+
+
+async function getAllUsersAsBlock() {
+    const querySnapshot = await getDocs(collection(db, "users")); // Replace 'collectionName'
+    let allUsers = {};
+    querySnapshot.forEach((doc) => {
+        allUsers[doc.id] = doc.data()
+    });
+    sessionStorage.setItem("allUsers", JSON.stringify(allUsers))
+    checkIfLogged(user)
+    handleLaudingLayout()
+}
+getAllUsersAsBlock()
+
+async function getAllMessagesAsBlock() {
+    let user = localStorage.getItem("user")
+    const querySnapshot = await getDocs(collection(db, `users/${user}/tasks`)); // Replace 'collectionName'
+    let allTasks = {};
+    querySnapshot.forEach((doc) => {
+        allTasks[doc.id] = doc.data()
+        sessionStorage.setItem("allTasks", JSON.stringify(allTasks))
+        addTasksFromDataBase(doc.id, doc.data())
+    });
+    sessionStorage.setItem("allTasks", JSON.stringify(allTasks))
+    tasksMain()
+    addSettingToTasksBox()
+    tasksSetting()
+    handleTasksViewInPage()
+}
+
+if(localStorage.getItem('user') !== null){
+    user = localStorage.getItem('user');
+} else {
+    localStorage.setItem('user', "null")
+}
+if(localStorage.getItem('loggedIn') == null){
+    localStorage.setItem("loggedIn", String(false))
+} 
+
+function handleLaudingLayout() {
+    let loadingOverlay = document.querySelector(".loadingOverlay");
+    let section = document.querySelector("section");
+    loadingOverlay.style.display = "none";
+    section.style.visibility = 'unset';
+}
+
+//  check if loggedIn
+function checkIfLogged(check) {
+    let before_login = document.querySelector('.before_login')
+    handleMainSectionHight()
+    // if not logged in
+    if(String(check) == "null" || String(check) == "false" || String(check) == "undefined"){
+        localStorage.setItem("loggedIn", String(false))
+        before_login.style.cssText = "display: flex"
+        loginAndRegister()
+    // if logged in
+    } else if(String(check) == "true" || String(check) != "null" || String(check) !== "undefined") {
+        user = localStorage.getItem('user')
+        localStorage.setItem("loggedIn", String(true))
+        before_login.style.cssText = "display: none"
+        getAllMessagesAsBlock()
+        handleAccountSection()
+    }
+}
+
+// handle account part and logout button
+function handleAccountSection() {
+    let accountSection = document.querySelector("section header .max-width .account"),
+    tasksContainer = document.querySelector("section main .tasks-container "),
+    userName = accountSection.querySelector(".userName"),
+    user = localStorage.getItem("user"),
+    logoutButton = accountSection.querySelector(".logOut");
+
+    accountSection.style.visibility = "unset"
+    userName.innerText = user
+
+    logoutButton.addEventListener("click", function(){
+        accountSection.style.visibility = "hidden"
+        localStorage.setItem("loggedIn", false)
+        localStorage.removeItem("user")
+        checkIfLogged("false")
+        sessionStorage.removeItem("allTasks")
+        tasksContainer.innerHTML = ""
+    })
+
+}
+
+// login and register handle
+function loginAndRegister() {
+    let all_users = JSON.parse(sessionStorage.getItem('allUsers'))
+
+    // handle hide and show password
+    let hidePassword = document.querySelectorAll(".before_login > .container .box form .cont .container img")
+    hidePassword.forEach(element => {
+            element.addEventListener("click", function() {
+                const parent = element.parentElement;
+
+                if (parent) {  // Check if parentElement is not null
+                    let input = parent.querySelector("input");
+                    
+                    if (input && input.type === "text") {  // Check if input is not null
+                        input.type = "password";
+                    } else if (input) {
+                        input.type = "text";
+                    }
+                } else {
+                    console.error("Parent element not found.");
+                }
+            })
+    });
+
+    /************** register **************/ 
+    let registerCard = document.querySelector(".before_login .container .register");
+    let registerForm = document.querySelector(".register form");
+    let userName = registerCard.querySelector(" .before_login .container .box .cont  .name")
+    let password = registerCard.querySelector(" .before_login .container .box .cont  .password")
+    let registerButton = document.querySelector(".before_login .container .box  .register_button")
+    let confirmPassword  = document.querySelector(".before_login .container .box .cont  .confirm_password")
+    let registrationPasswordAlarm = document.querySelector(".before_login .container .box.register .cont .alarm.password")
+    let registrationUserNameAlarm = document.querySelector(".before_login .container .box.register .cont .alarm.userName")
+    let passwordCheck = false;
+
+    // check password
+    confirmPassword.addEventListener("input", function() {
+        if(password.value.length <= confirmPassword.value.length && confirmPassword.value !== password.value){
+            registrationPasswordAlarm.style.cssText = 'display: block; background: #f29999;'
+            confirmPassword.style.cssText = "background-color: #f29999;"
+            passwordCheck = false
+        } else if(confirmPassword.value == password.value){
+            registrationPasswordAlarm.style.display = 'none'
+            confirmPassword.style.cssText = "background-color: #1296d1;"
+            passwordCheck = true
+        }
+    })
+    // send new user
+    registerButton.addEventListener("click", function() {
+        let allCheck = userName.value.length > 2 && passwordCheck && registerForm.checkValidity(); // return boolean 
+        let userExists = false;
+        let key;
+        for (const key in all_users) {
+            // Check if the username matches
+            if (userName.value === all_users[key].user_name) {
+                userExists = true;  // Set flag if the user exists
+                registrationUserNameAlarm.classList.add("open")
+                break;  // Stop the loop if a match is found
+            } else {
+                registrationUserNameAlarm.classList.remove("open")
+            }
+        }
+        if (!userExists && allCheck) {
+            addUser(userName.value, password.value);
+
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("user", userName.value);
+            checkIfLogged('true');
+            userName.value = "";
+            password.value = "";
+            confirmPassword.value = "";
+            ChangeLoginPageButton.click();
+        } 
+    })
+
+    /************** login **************/ 
+    let userNameInput = document.querySelector(".before_login .container .box.logIn form .cont .name")
+    let passwordInput = document.querySelector("section main .before_login > .container .box form .cont .container input")
+    let loginAlarm = document.querySelector(".before_login .container .box.logIn .cont .alarm")
+    let loginButton = document.querySelector(".before_login .container .box.logIn  .login_button")
+
+    loginButton.addEventListener("click", function() {
+        for (const key in all_users) {
+            if(userNameInput.value == all_users[key].userName && passwordInput.value == all_users[key].password){
+                loginAlarm.classList.remove("open")
+                localStorage.setItem("loggedIn", 'true')
+                localStorage.setItem("user", userNameInput.value)
+                checkIfLogged('true')
+                userNameInput.value = ""
+                passwordInput.value = ""
+                return
+            } else if(userNameInput.value.length > 0 && passwordInput.value.length > 0){
+                // error
+                loginAlarm.classList.add("open")
+            }
+        }
+    })
+}
+
+// register button handle
+ChangeLoginPageButton.addEventListener("click", function() {
+    let loginBox = document.querySelector(".logIn");
+    let registerBox = document.querySelector(".register");
+    if(loginBox.style.display == "none"){
+        loginBox.style.cssText = 'display: flex'
+        registerBox.style.cssText = 'display: none'
+        ChangeLoginPageButton.innerHTML = 'Register'
+    } else {
+        loginBox.style.cssText = 'display: none'
+        registerBox.style.cssText = 'display: flex'
+        ChangeLoginPageButton.innerHTML = 'Login'
+    }
+})
+
+// handle main section automatic hight
+function handleMainSectionHight() {
+    let viewportHeight = window.innerHeight,
+    header = document.querySelector("header"),
+    footer = document.querySelector("footer"),
+    wantedHight;
+
+    wantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
+
+    const root = document.documentElement;
+    root.style.setProperty('--main-hight', `${wantedHight}px` ); // Change to tomato color
+}
 
 function time() {
         let now = new Date();
@@ -135,67 +303,7 @@ function time() {
 time()
 setInterval(time(), 500);
 
-function handleTasksViewInPage() {
-    // console.log("test")
-
-    // window.addEventListener('resize', function() {
-        let allTasksCard = document.querySelectorAll(".tasks-container .task-card")
-
-        let tasksContainerWidth = allTasksCard[0].parentElement.offsetWidth
-        let taskWidth = allTasksCard[0].offsetWidth
-        let gap = 20;
-    
-        let numberOfBoxes = 1;
-        while (tasksContainerWidth / numberOfBoxes >= (taskWidth + gap)) {
-            numberOfBoxes++ 
-        }
-        let freeSpace = tasksContainerWidth - (taskWidth * (numberOfBoxes - 1)) - (gap * numberOfBoxes - 1);
-    
-        allTasksCard.forEach((element, index) => {
-            if(numberOfBoxes > 3){
-                if((index + 2) <= numberOfBoxes){
-                    if(index == 0){
-                        element.style.cssText = `left: ${0} `
-                    } else {
-                        element.style.cssText = `left: ${(index * (taskWidth + gap)) + ((freeSpace / (numberOfBoxes - 1)) * index) }px`
-                    }
-                } else {
-                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
-                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
-                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
-                    element.style.cssText = `top: ${+topElementTopPosition + +topElement + gap}px; left: ${styles.getPropertyValue('left')}`
-                }
-            } else if(numberOfBoxes == 3) {
-                if((index + 2) <= numberOfBoxes){
-                    if(index == 0){
-                        element.style.cssText = `left: ${freeSpace / 3}px `
-                    } else {
-                        element.style.cssText = `left: ${(index * (taskWidth + gap)) + ((freeSpace / 3) * 2) }px`
-                    }
-                } else {
-                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
-                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
-                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
-                    element.style.cssText = `top: ${+topElementTopPosition + +topElement + gap}px; left: ${styles.getPropertyValue('left')}`
-                }
-            } else if(numberOfBoxes == 2){
-                if(index == 0) {
-                    if(index == 0){
-                        element.style.cssText = `left: ${freeSpace / 2 + gap}px `
-                    }
-                } else {
-                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
-                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
-                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
-                    element.style.cssText = `top: ${+topElementTopPosition + topElement + gap + 10}px; left: ${styles.getPropertyValue('left')}`
-                }
-            }
-        });
-    // });
-}
-
 function sliderMain() {
-    function sliderHandle() {
         slider.addEventListener('mouseover', function (){
             slider.classList.add('open');
         })
@@ -209,13 +317,10 @@ function sliderMain() {
                 slider.classList.toggle("open")
             })
         }
-
-    }
-    sliderHandle()
-
 }
 sliderMain()
 
+// change this function algorithm 
 function checkIfAllTasksAreDone(task){
     // console.log(task) //{"0": {}, "1": {}, "2": {}} every Task?
     let allTasksDone = true;
@@ -226,7 +331,6 @@ function checkIfAllTasksAreDone(task){
         }
     });
 
-    let taskId = task[0].parentElement.parentElement.getAttribute("data-id")
     let allTasks = JSON.parse(sessionStorage.getItem("allTasks"))
 
         if (allTasksDone) {
@@ -237,45 +341,15 @@ function checkIfAllTasksAreDone(task){
             let div = document.createElement("div");
             div.classList = 'complete-date';
             div.innerText = `completed at:   ${allTasks[taskId]['taskData']['completeDate']}`
-
-            // if (TaskData["taskData"]['completeDate'] == undefined ){
-            //     // let now = new Date();
-            //     // const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-            //     // let completeTime = now.toLocaleString('en-US', options);
-            //     // TaskData['taskData']['completeDate'] = `${completeTime}`
-            //     // div.innerText = `completed at:   ${completeTime}`
-            //     // console.log(TaskData["taskData"])
-            //     // addTask(taskId, TaskData["taskData"])
-            // } else{
-            //     // TaskData['taskData']['completeDate'] = TaskData["taskData"]['completeDate']
-            //     // div.innerText = `completed at:   ${TaskData["taskData"]['completeDate']}`
-            //     // console.log(TaskData["taskData"])
-            // }
-
-            // TaskData['taskData']['completeDate'] = `${completeTime}`
-            // console.log(TaskData["taskData"])
-
-
             task[0].parentElement.parentElement.appendChild(div)
         } else {
             // Set opacity to 1 and exit the loop
             task[0].parentElement.parentElement.setAttribute("data-status", "false")
             task[0].parentElement.parentElement.setAttribute("complete-date", 'not-completed')
-            // let taskId = task[0].parentElement.parentElement.getAttribute("data-id"),
-            // TaskData = JSON.parse(sessionStorage.getItem("allTasks"))[taskId];
-            // TaskData = JSON.parse(localStorage.getItem(`${taskId}`))
-            // TaskData.completeDate = 'not-completed'
-            // console.log(TaskData['taskData']['completeDate'])
-            // if(TaskData['taskData']['completeDate'] !== undefined){
-            //     // delete TaskData['taskData']['completeDate'];
-            //     // console.log(TaskData)
-            //     // addTask(taskId, TaskData["taskData"])
-            // }
             if(task[0].parentElement.parentElement.querySelector(".complete-date") != null){
                 task[0].parentElement.parentElement.querySelector(".complete-date").remove()
             } 
         }
-        // console.log("$$$$$$$$$")
 } 
 
 function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
@@ -389,7 +463,6 @@ function tasksMain(){
     let DeleteTaskButton  = null;
 
     function createTask() {
-        // console.log(window.innerWidth < 600)
         if(window.innerWidth < 600){
             var addTaskButton = document.querySelector("section .add-task-photo");
         } else {
@@ -566,6 +639,7 @@ function tasksMain(){
                     }
                     sessionStorage.setItem("allTasks" , JSON.stringify(allTasks))
                 }
+                handleEveryNestedTaskData() 
                 addDataToDataBase()
                 overlay.remove()
                 completeTasks()
@@ -588,7 +662,6 @@ function tasksMain(){
         
         completeTasksInput.forEach(element => {
             element.addEventListener("click", function() {
-                console.log(element)
 
                 // add complete of false Attribute for task && add complete date to complete task
                 let now = new Date();
@@ -600,7 +673,6 @@ function tasksMain(){
                     if(element.parentElement.parentElement.querySelector(".complete_date") != null){
                         element.parentElement.parentElement.children[1].querySelector(".complete_date").remove()
                     }
-                    // console.log("adding complete date", element.parentElement.parentElement.children[1].querySelector(".complete_date"))
 
                     let completedDate = document.createElement("h1")
                     completedDate.className = "complete_date"
@@ -610,15 +682,12 @@ function tasksMain(){
                     bottomTaskCont.appendChild(completedDate)
                 } else {
                     element.parentElement.parentElement.setAttribute("data-status", 'false')
-                    // console.log(element.parentElement.parentElement.querySelector(".complete_date"))
                     if(element.parentElement.parentElement.querySelector(".complete_date") != null){
                         element.parentElement.parentElement.children[1].querySelector(".complete_date").innerHTML = "Complete date: Not completed"
                     }
                 }
 
                 let id = element.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id")
-                // console.log(JSON.parse(sessionStorage.getItem("allTasks")))
-                // console.log(JSON.parse(sessionStorage.getItem("allTasks"))[id]['taskData'] )
                 let taskData = JSON.parse(sessionStorage.getItem("allTasks"))[id]['taskData']
                 let EditedTaskTitle = taskData['title']
                 let EditedTaskDate = taskData['date']
@@ -764,7 +833,6 @@ function addSettingToTasksBox() {
 }
 
 function tasksSetting(){
-    
     settingButton.forEach((settingButton, index) => {
 
         let didntDelete = settingButton.parentElement.querySelector(".task-card .trash  .settingBox .boxesCont .no"),
@@ -820,7 +888,6 @@ function tasksSetting(){
 
                     // let removeBottomTaskCont = document.querySelectorAll(".tasks-container .task-card .container .task")
                     // removeBottomTaskCont.forEach(element => {
-                    //     // console.log(element)
                     //     // element.querySelector(".bottomTaskCont").remove()
                     // })
 
@@ -869,8 +936,6 @@ function tasksSetting(){
 
                         function HandleTasksArrangeWhenDeleteOne() {
                             taskContainer.querySelectorAll(".task").forEach((element ,index)=> {
-                                // let everyMessageValue =  element.querySelector(".cont").querySelector(".TaskData").value.slice(4)
-                                console.log(element)
                                 element.querySelector(".cont").querySelector(".num").innerHTML = `${index + 1} -` 
                             });
                         }
@@ -914,7 +979,6 @@ function tasksSetting(){
 
                             // ################## delete new added tasks ################
                             deleteTaskImg.addEventListener("click", function() {
-                                // console.log(deleteTaskImg.parentElement.parentElement)
                                 deleteTaskImg.parentElement.parentElement.remove();
                                 tasksNum--
                                 HandleTasksArrangeWhenDeleteOne()
@@ -1034,6 +1098,65 @@ function tasksSetting(){
     });
 }
 
+function handleTasksViewInPage() {
+
+    let allTasksCard = document.querySelectorAll(".tasks-container .task-card")
+    if(allTasksCard.length !== 0) {
+        
+        let tasksContainerWidth = allTasksCard[0].parentElement.offsetWidth
+        let taskWidth = allTasksCard[0].offsetWidth
+        let gap = 20;
+    
+        let numberOfBoxes = 1;
+        while (tasksContainerWidth / numberOfBoxes >= (taskWidth + gap)) {
+            numberOfBoxes++ 
+        }
+        let freeSpace = tasksContainerWidth - (taskWidth * (numberOfBoxes - 1)) - (gap * numberOfBoxes - 1);
+    
+        allTasksCard.forEach((element, index) => {
+            if(numberOfBoxes > 3){
+                if((index + 2) <= numberOfBoxes){
+                    if(index == 0){
+                        element.style.cssText = `left: ${0} `
+                    } else {
+                        element.style.cssText = `left: ${(index * (taskWidth + gap)) + ((freeSpace / (numberOfBoxes - 1)) * index) }px`
+                    }
+                } else {
+                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
+                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
+                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
+                    element.style.cssText = `top: ${+topElementTopPosition + +topElement + gap}px; left: ${styles.getPropertyValue('left')}`
+                }
+            } else if(numberOfBoxes == 3) {
+                if((index + 2) <= numberOfBoxes){
+                    if(index == 0){
+                        element.style.cssText = `left: ${freeSpace / 3}px `
+                    } else {
+                        element.style.cssText = `left: ${(index * (taskWidth + gap)) + ((freeSpace / 3) * 2) }px`
+                    }
+                } else {
+                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
+                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
+                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
+                    element.style.cssText = `top: ${+topElementTopPosition + +topElement + gap}px; left: ${styles.getPropertyValue('left')}`
+                }
+            } else if(numberOfBoxes == 2){
+                if(index == 0) {
+                    if(index == 0){
+                        element.style.cssText = `left: ${freeSpace / 2 + gap}px `
+                    }
+                } else {
+                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
+                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
+                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
+                    element.style.cssText = `top: ${+topElementTopPosition + topElement + gap + 10}px; left: ${styles.getPropertyValue('left')}`
+                }
+            }
+        });
+    }
+
+}
+
 function handleEveryNestedTaskData() {
     let test = document.querySelectorAll(".tasks-container .task-card .container .task")
     test.forEach(element => {
@@ -1045,7 +1168,6 @@ function handleEveryNestedTaskData() {
         let resizeObserver = new ResizeObserver(entries => {
         for (let entry of entries) {
             // let height = entry.contentRect.height;
-            // console.log('Element height changed to: ' + height + 'px');
             handleTasksViewInPage()
         }
         });
