@@ -313,6 +313,9 @@ function handleMainSectionHight() {
         header = document.querySelector("header"),
         footer = document.querySelector("footer"),
         wantedHight;
+        console.log(window.innerHeight)
+        console.log(header.offsetHeight)
+        console.log(footer.offsetHeight)
     
         wantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
     
