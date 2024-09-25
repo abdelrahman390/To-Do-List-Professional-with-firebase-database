@@ -9,7 +9,7 @@ body {
 
 /* Target the scrollbar */
 ::-webkit-scrollbar {
-  width: 5px; /* Set the width of the scrollbar */
+  width: 10px; /* Set the width of the scrollbar */
 }
 
 /* The scrollbar thumb (the draggable part) */
@@ -28,6 +28,7 @@ body {
   --third-color: #00407f;
   --fourth-color: #007549;
   --fifth-color: #f32727;
+  --main-hight: 302px;
 }
 
 section {
@@ -1479,7 +1480,7 @@ section main .slider span {
   padding-right: 10px;
 }
 section main .tasks-container {
-  height: calc(100vh - 200px);
+  height: var(--main-hight);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1723,6 +1724,7 @@ section main .tasks-container .task-card .container .task .upperTaskCont .cont .
 section main .tasks-container .task-card .container .task .upperTaskCont .cont .TaskData {
   margin: 0 10px 0 5px;
   text-align: left;
+  width: 100%;
 }
 section main .tasks-container .task-card .container .task .upperTaskCont .cont input.task-content {
   background-color: transparent;
@@ -2265,6 +2267,9 @@ section footer a {
   .loadingOverlay .spinner {
     width: 25px;
     height: 25px;
+  }
+  section {
+    min-height: unset;
   }
   section header {
     -webkit-box-pack: start !important;

@@ -109,6 +109,7 @@ async function getAllMessagesAsBlock() {
     addSettingToTasksBox()
     tasksSetting()
     handleTasksViewInPage()
+    handleEveryNestedTaskData()
 }
 
 if(localStorage.getItem('user') !== null){
@@ -284,15 +285,41 @@ ChangeLoginPageButton.addEventListener("click", function() {
 
 // handle main section automatic hight
 function handleMainSectionHight() {
-    let viewportHeight = window.innerHeight,
-    header = document.querySelector("header"),
-    footer = document.querySelector("footer"),
-    wantedHight;
+    if(window.innerWidth <= 600) {
+        let viewportHeight = window.innerHeight,
+        header = document.querySelector("header"),
+        footer = document.querySelector("footer"),
+        slider = document.querySelector("section main .slider"),
+        TasksMain = document.querySelector("section main .tasks-container"),
+        mainWantedHight,
+        TasksWantedHight;
+        console.log(window.innerHeight)
+        console.log(header.offsetHeight)
+        console.log(slider.offsetHeight)
+        console.log(footer.offsetHeight)
+        // console.log((header.offsetHeight + slider.offsetHeight))
+    
+        TasksWantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
+        const root = document.documentElement;
+        TasksMain.style.height = `${viewportHeight - (header.offsetHeight + footer.offsetHeight + slider.offsetHeight + 5)}px`
+        // root.style.setProperty('--main-hight', `${mainWantedHight}px` ); // Change to tomato color
 
-    wantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
+        mainWantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
+        root.style.setProperty('--main-hight', `${mainWantedHight}px` ); // Change to tomato color
 
-    const root = document.documentElement;
-    root.style.setProperty('--main-hight', `${wantedHight}px` ); // Change to tomato color
+
+    } else {
+        let viewportHeight = window.innerHeight,
+        header = document.querySelector("header"),
+        footer = document.querySelector("footer"),
+        wantedHight;
+    
+        wantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
+    
+        const root = document.documentElement;
+        root.style.setProperty('--main-hight', `${wantedHight}px` ); // Change to tomato color
+    }
+
 }
 
 function time() {

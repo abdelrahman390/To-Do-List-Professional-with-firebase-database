@@ -10,7 +10,7 @@ body{
 
 /* Target the scrollbar */
 ::-webkit-scrollbar {
-    width: 5px; /* Set the width of the scrollbar */
+    width: 10px; /* Set the width of the scrollbar */
 }
 /* The scrollbar thumb (the draggable part) */
 ::-webkit-scrollbar-thumb {
@@ -28,6 +28,7 @@ body{
     --third-color: #00407f;
     --fourth-color: #007549;
     --fifth-color: #f32727;
+    --main-hight: 302px;
 }
 
 @mixin button {
@@ -868,6 +869,7 @@ body{
         100% { transform: rotate(360deg); }
       }
 }
+
 section{
     display: flex;
     visibility: hidden;
@@ -920,14 +922,12 @@ section{
 
     & main{
         width: 100%;
-        // height: calc(100vh - 120px);
         height: var(--main-hight);
 
         & .before_login{
             border-top: 1px solid #ffffff85;
             position: absolute;
             width: 100%;
-            // height: calc(100% - 120px);
             height: var(--main-hight);
             background-color: #00407f;
             display: flex;
@@ -1107,7 +1107,7 @@ section{
         }
 
         & .tasks-container{
-            height: calc(100vh - 200px);
+            height: var(--main-hight);
             display: flex;
             gap: 20px;
             width: 90%;
@@ -1288,6 +1288,7 @@ section{
                                 & .TaskData{
                                     margin: 0 10px 0 5px;
                                     text-align: left;
+                                    width: 100%;
                                 }
                                 & input.task-content{
                                     background-color: transparent;
@@ -1687,6 +1688,7 @@ section{
         height: 25px;
     }
     section{
+        min-height: unset;
         & header{
             justify-content: flex-start !important;
             & .max-width{
