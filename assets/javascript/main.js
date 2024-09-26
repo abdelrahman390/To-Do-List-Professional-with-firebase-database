@@ -46,6 +46,7 @@ async function addUser(userName, password) {
             addedDate: addedDate,
             tasks: {}
         });
+
         location.reload();
     } catch (error) {
         console.error('Error adding user: ', error);
@@ -232,15 +233,16 @@ function loginAndRegister() {
             }
         }
         if (!userExists && allCheck) {
+            registerButton.innerHTML = `<div class="spinner"></div>`
+            registerButton.disabled = true
+            registerButton.style.cursor = "not-allowed"
             addUser(userName.value, password.value);
 
             localStorage.setItem("loggedIn", "true");
             localStorage.setItem("user", userName.value);
-            checkIfLogged('true');
             userName.value = "";
             password.value = "";
             confirmPassword.value = "";
-            ChangeLoginPageButton.click();
         } 
     })
 
@@ -292,11 +294,6 @@ function handleMainSectionHight() {
         slider = document.querySelector("section main .slider"),
         TasksMain = document.querySelector("section main .tasks-container"),
         mainWantedHight,
-        TasksWantedHight;
-        console.log(window.innerHeight)
-        console.log(header.offsetHeight)
-        console.log(slider.offsetHeight)
-        console.log(footer.offsetHeight)
 
         TasksWantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight + slider.offsetHeight + 5)
         const root = document.documentElement;
@@ -304,18 +301,13 @@ function handleMainSectionHight() {
         
         mainWantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight)
         root.style.setProperty('--main-hight', `${mainWantedHight}px` ); // Change to tomato color
-
-
     } else {
         let viewportHeight = window.innerHeight,
         header = document.querySelector("header"),
         footer = document.querySelector("footer"),
         mainWantedHight,
         TasksWantedHight;
-        console.log(window.innerHeight)
-        console.log(header.offsetHeight)
-        console.log(footer.offsetHeight)
-    
+
         TasksWantedHight = viewportHeight - (header.offsetHeight + footer.offsetHeight + 85)
         const root = document.documentElement;
         root.style.setProperty('--tasks-hight', `${TasksWantedHight}px` ); // Change to tomato color

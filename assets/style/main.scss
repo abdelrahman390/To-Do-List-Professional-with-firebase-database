@@ -848,6 +848,7 @@ body{
     font-size: 17px;
 }
 
+/* loading */
 .loadingOverlay {
     position: absolute;
     width: 100vw;
@@ -865,11 +866,13 @@ body{
         height: 120px;
         animation: spin 0.5s linear infinite;
     }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
 }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+  /* loading */
+
 
 section{
     display: flex;
@@ -1025,6 +1028,18 @@ section{
                     font-size: 20px;
                     width: 100%;
                     cursor: pointer;
+                    display: flex;
+                    justify-content: center;
+                    cursor: pointer;
+                    & .spinner {
+                        border: 5px solid #f3f3f3;
+                        border-top: 5px solid #3498db;
+                        border-radius: 50%;
+                        width: 15px;
+                        height: 15px;
+                        -webkit-animation: spin 0.5s linear infinite;
+                        animation: spin 0.5s linear infinite;
+                    }
                     &.Register{
                         background-color: #f0f8ffd1;
                         width: fit-content;                    

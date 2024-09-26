@@ -1088,6 +1088,7 @@ body {
   --main-hight: calc(100vh - 120px);
 }
 
+/* loading */
 .loadingOverlay {
   position: absolute;
   width: 100vw;
@@ -1113,6 +1114,7 @@ body {
   -webkit-animation: spin 0.5s linear infinite;
           animation: spin 0.5s linear infinite;
 }
+
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -1123,6 +1125,7 @@ body {
             transform: rotate(360deg);
   }
 }
+
 @keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -1133,7 +1136,7 @@ body {
             transform: rotate(360deg);
   }
 }
-
+/* loading */
 section {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1365,6 +1368,22 @@ section main .before_login > .container button {
   font-size: 20px;
   width: 100%;
   cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  cursor: pointer;
+}
+section main .before_login > .container button .spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  -webkit-animation: spin 0.5s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 section main .before_login > .container button.Register {
   background-color: rgba(240, 248, 255, 0.8196078431);
