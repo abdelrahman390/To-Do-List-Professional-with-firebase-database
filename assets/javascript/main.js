@@ -909,14 +909,7 @@ function tasksSetting(){
                 editButton.addEventListener("click", function() {
 
                     settingButton.parentElement.style = "display: none"
-
-                    let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
-                    containerHeight = container.scrollHeight ; 
-                    container.classList.add("open")
-
-                    if(container.classList.contains("open")) {
-                        container.style.height = `${containerHeight}px`
-                    } 
+                    settingButton.parentElement.parentElement.querySelector(".container").classList.add("open")
 
                     let taskCard = editButton.parentElement.parentElement.parentElement;
                     taskCard.setAttribute("edit", "true")
@@ -1062,6 +1055,26 @@ function tasksSetting(){
                             })
 
                         });
+
+                        let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
+                        allTasksHeight = container.parentElement.querySelectorAll(".task"),
+                        containerHeight = 0;
+    
+                        if(container.classList.contains("open")) {
+                            allTasksHeight.forEach(element => {
+                                console.log(containerHeight)
+                                containerHeight += element.scrollHeight
+                            });
+                            console.log(containerHeight)
+                            container.style.height = `${containerHeight}px` 
+                        } 
+                        let resizeObserver = new ResizeObserver(entries => {
+                            for (let entry of entries) {
+                                // let height = entry.contentRect.height;
+                                handleTasksViewInPage()
+                            }
+                        });
+                        resizeObserver.observe(container.parentElement);
 
                     }
                     editTaskHandle()
