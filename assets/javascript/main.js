@@ -111,6 +111,7 @@ async function getAllMessagesAsBlock() {
     tasksSetting()
     handleTasksViewInPage()
     handleEveryNestedTaskData()
+    handleOpenAndCloseTasks()
 }
 
 if(localStorage.getItem('user') !== null){
@@ -1121,6 +1122,7 @@ function tasksSetting(){
     });
 }
 
+let i = 1
 function handleTasksViewInPage() {
 
     let allTasksCard = document.querySelectorAll(".tasks-container .task-card")
@@ -1169,15 +1171,24 @@ function handleTasksViewInPage() {
                         element.style.cssText = `left: ${freeSpace / 2 + gap}px `
                     }
                 } else {
-                    let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
-                    let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
-                    let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
-                    element.style.cssText = `top: ${+topElementTopPosition + topElement + gap + 10}px; left: ${styles.getPropertyValue('left')}`
+                    if(index == 1){
+                        let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
+                        let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
+                        let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
+                        element.style.cssText = `top: ${+topElementTopPosition + topElement + gap + 20 }px; left: ${styles.getPropertyValue('left')}`
+                    } else{
+                        let topElement = (allTasksCard[(index + 1) - numberOfBoxes].clientHeight + 10)
+                        let styles = window.getComputedStyle(allTasksCard[(index + 1) - numberOfBoxes]);
+                        let topElementTopPosition = styles.getPropertyValue("top").split("px")[0]
+                        element.style.cssText = `top: ${+topElementTopPosition + topElement + gap}px; left: ${styles.getPropertyValue('left')}`
+                    }
                 }
             }
         });
     }
 
+    // console.log("rennes", i)
+    // i++
 }
 
 function handleEveryNestedTaskData() {
@@ -1195,5 +1206,32 @@ function handleEveryNestedTaskData() {
         }
         });
         resizeObserver.observe(element);
+    });
+}
+
+function handleOpenAndCloseTasks() {
+    let allTasksTitles =  document.querySelectorAll("section main .tasks-container .task-card .title ")
+    
+    allTasksTitles.forEach(element => {
+        element.addEventListener("click", function() {
+            let container = element.parentElement.querySelector(".container"),
+            containerHeight = container.scrollHeight ; 
+
+            container.classList.toggle("open")
+            if(container.classList.contains("open")) {
+                container.style.height = `${containerHeight}px`
+            } else {
+                container.style.height = "0"
+            }
+
+                // Create a ResizeObserver instance
+                let resizeObserver = new ResizeObserver(entries => {
+                    for (let entry of entries) {
+                        // let height = entry.contentRect.height;
+                        handleTasksViewInPage()
+                    }
+                });
+                resizeObserver.observe(element.parentElement);
+            })
     });
 }

@@ -1258,6 +1258,7 @@ section{
                     text-align: center;
                     font-size: 23px;
                     background-color: transparent;
+                    cursor: pointer;
                 }
                 & input.title{
                     border-bottom: 3px dotted var(--fourth-color);
@@ -1276,6 +1277,9 @@ section{
                     font-size: 16px;
                     font-weight: 600;
                     text-align: right;
+                    height: 0;
+                    overflow: hidden;
+                    transition: height 0.5s ease;
                     & .task {
                         padding: 20px 0;
                         display: flex;
@@ -1712,6 +1716,9 @@ section{
                 flex-direction: column-reverse;
                 gap: 10px;
                 width: 100%;
+                & .project_name{
+                    display: none;
+                }
             }
         }
         & main {
