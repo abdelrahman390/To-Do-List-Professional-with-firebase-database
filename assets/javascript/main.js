@@ -910,10 +910,13 @@ function tasksSetting(){
 
                     settingButton.parentElement.style = "display: none"
 
-                    // let removeBottomTaskCont = document.querySelectorAll(".tasks-container .task-card .container .task")
-                    // removeBottomTaskCont.forEach(element => {
-                    //     // element.querySelector(".bottomTaskCont").remove()
-                    // })
+                    let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
+                    containerHeight = container.scrollHeight ; 
+                    container.classList.add("open")
+
+                    if(container.classList.contains("open")) {
+                        container.style.height = `${containerHeight}px`
+                    } 
 
                     let taskCard = editButton.parentElement.parentElement.parentElement;
                     taskCard.setAttribute("edit", "true")
@@ -1007,6 +1010,12 @@ function tasksSetting(){
                                 tasksNum--
                                 HandleTasksArrangeWhenDeleteOne()
                             })
+                            let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
+                            containerHeight = container.scrollHeight ; 
+        
+                            if(container.classList.contains("open")) {
+                                container.style.height = `${containerHeight}px`
+                            } 
 
                             handleEveryNestedTaskData() 
                         })
@@ -1028,9 +1037,28 @@ function tasksSetting(){
 
                             // ################## delete current task ################
                             deleteTaskImg.addEventListener("click", function() {
+                                console.log(deleteTaskImg)
                                 element.querySelector(".cont").parentElement.parentElement.remove();
                                 tasksNum--
                                 HandleTasksArrangeWhenDeleteOne()
+
+                                let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
+                                allTasksHeight = container.parentElement.querySelectorAll(".task"),
+                                containerHeight = 0;
+            
+                                if(container.classList.contains("open")) {
+                                    allTasksHeight.forEach(element => {
+                                        containerHeight += element.scrollHeight
+                                    });
+                                    container.style.height = `${containerHeight}px` 
+                                } 
+                                let resizeObserver = new ResizeObserver(entries => {
+                                    for (let entry of entries) {
+                                        // let height = entry.contentRect.height;
+                                        handleTasksViewInPage()
+                                    }
+                                });
+                                resizeObserver.observe(container.parentElement);
                             })
 
                         });
@@ -1197,29 +1225,29 @@ function handleEveryNestedTaskData() {
         element.addEventListener("click", function (){
             element.classList.toggle("open") 
 
-            let taskHeight = element.querySelector(".bottomTaskCont").scrollHeight
+            if (element.querySelector(".bottomTaskCont") !== null){
+                let taskHeight = element.querySelector(".bottomTaskCont").scrollHeight
 
-            if(element.classList.contains("open")) {
-                element.querySelector(".bottomTaskCont").style.height = `${taskHeight - 10}px`
-            } else {
-                element.querySelector(".bottomTaskCont").style.height = "0"
-            }
-
-
-            let resizeObserver = new ResizeObserver(entries => {
-                for (let entry of entries) {
-                    // let height = entry.contentRect.height;
-                    // console.log(height)
-                    let container = element.parentElement.parentElement.querySelector(".container"),
-                    allTasks = container.parentElement.querySelectorAll(".task"),
-                    allTasksHeight = 0; 
-                    allTasks.forEach(element => {
-                        allTasksHeight += element.scrollHeight
-                    });
-                    container.style.height = `${allTasksHeight}px`
+                if(element.classList.contains("open")) {
+                    element.querySelector(".bottomTaskCont").style.height = `${taskHeight - 10}px`
+                } else {
+                    element.querySelector(".bottomTaskCont").style.height = "0"
                 }
-            });
-            resizeObserver.observe(element);
+
+                let resizeObserver = new ResizeObserver(entries => {
+                    for (let entry of entries) {
+                        // let height = entry.contentRect.height;
+                        let container = element.parentElement.parentElement.querySelector(".container"),
+                        allTasks = container.parentElement.querySelectorAll(".task"),
+                        allTasksHeight = 0; 
+                        allTasks.forEach(element => {
+                            allTasksHeight += element.scrollHeight
+                        });
+                        container.style.height = `${allTasksHeight}px`
+                    }
+                });
+                resizeObserver.observe(element);
+            }
         })
 
         // Create a ResizeObserver instance
@@ -1258,6 +1286,7 @@ function handleOpenAndCloseTasks() {
                 handleTasksViewInPage()
             }
         });
+        // task-card
         resizeObserver.observe(element.parentElement);
     });
 }

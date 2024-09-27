@@ -1599,6 +1599,7 @@ section main .tasks-container .task-card .trash {
   -webkit-box-direction: reverse;
       -ms-flex-direction: row-reverse;
           flex-direction: row-reverse;
+  z-index: 2;
 }
 section main .tasks-container .task-card .trash.open {
   background-color: white;
@@ -1850,7 +1851,7 @@ section main .tasks-container .task-card .addTaskButton {
   color: white;
   font-size: 17px;
   background-color: var(--fourth-color);
-  margin: 10px 0;
+  margin: 20px 0 10px;
 }
 section main .tasks-container .task-card .DoneButton {
   border: none;

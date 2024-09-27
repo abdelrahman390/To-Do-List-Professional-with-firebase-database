@@ -1201,6 +1201,7 @@ section{
                     right: 0px;
                     cursor: pointer;
                     flex-direction: row-reverse;
+                    z-index: 2;
                     &.open {
                         background-color: white;
                         width: 97%;
@@ -1387,7 +1388,7 @@ section{
                 & .addTaskButton{
                     @include button();
                     background-color: var(--fourth-color);
-                    margin: 10px 0
+                    margin: 20px 0 10px;
                 }
                 & .DoneButton{
                     @include button();
