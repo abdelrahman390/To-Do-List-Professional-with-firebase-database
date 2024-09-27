@@ -1195,7 +1195,31 @@ function handleEveryNestedTaskData() {
     let test = document.querySelectorAll(".tasks-container .task-card .container .task")
     test.forEach(element => {
         element.addEventListener("click", function (){
-            element.classList.toggle("open")
+            element.classList.toggle("open") 
+
+            let taskHeight = element.querySelector(".bottomTaskCont").scrollHeight
+
+            if(element.classList.contains("open")) {
+                element.querySelector(".bottomTaskCont").style.height = `${taskHeight - 10}px`
+            } else {
+                element.querySelector(".bottomTaskCont").style.height = "0"
+            }
+
+
+            let resizeObserver = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    // let height = entry.contentRect.height;
+                    // console.log(height)
+                    let container = element.parentElement.parentElement.querySelector(".container"),
+                    allTasks = container.parentElement.querySelectorAll(".task"),
+                    allTasksHeight = 0; 
+                    allTasks.forEach(element => {
+                        allTasksHeight += element.scrollHeight
+                    });
+                    container.style.height = `${allTasksHeight}px`
+                }
+            });
+            resizeObserver.observe(element);
         })
 
         // Create a ResizeObserver instance
@@ -1223,15 +1247,17 @@ function handleOpenAndCloseTasks() {
             } else {
                 container.style.height = "0"
             }
+            // console.log(element.parentElement.querySelector("section main .tasks-container .task-card .container .task .upperTaskCont"))
 
-                // Create a ResizeObserver instance
-                let resizeObserver = new ResizeObserver(entries => {
-                    for (let entry of entries) {
-                        // let height = entry.contentRect.height;
-                        handleTasksViewInPage()
-                    }
-                });
-                resizeObserver.observe(element.parentElement);
-            })
+            // Create a ResizeObserver instance
+            // resizeObserverTwo.observe(element.parentElement.querySelector("section main .tasks-container .task-card .container .task .upperTaskCont"));
+        })
+        let resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                // let height = entry.contentRect.height;
+                handleTasksViewInPage()
+            }
+        });
+        resizeObserver.observe(element.parentElement);
     });
 }

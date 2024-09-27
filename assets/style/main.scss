@@ -342,10 +342,10 @@ section{
                             }
                         }
                         & .bottomTaskCont{
-                            max-height: 0;
+                            // max-height: 0;
+                            height: 0;
                             overflow: hidden;
-                            transition: 0.5s;
-                            transition-timing-function: linear;
+                            transition: height 0.5s ease;
                             & h1{
                                 font-size: 15px;
                                 text-align: left;
@@ -357,7 +357,7 @@ section{
                         } 
                         &.open {
                             & .bottomTaskCont{
-                                max-height: 150px;
+                                // max-height: 150px;
                                 margin: 15px 0 0;
                                 border-top: 1px solid var(--primary-color);
                                 padding-top: 15px;
@@ -1151,6 +1151,10 @@ section{
                 width: 100%;
                 // position: relative;
                 &[data-status = complete] {
+                    & .title {
+                        z-index: 2;
+                        opacity: 0.5;
+                    }
                     &.on-edit::before{
                         width: 0 !important;
                         height: 0 !important;
@@ -1281,7 +1285,7 @@ section{
                     overflow: hidden;
                     transition: height 0.5s ease;
                     & .task {
-                        padding: 20px 0;
+                        padding: 20px 0 10px;
                         display: flex;
                         flex-direction: row;
                         justify-content: space-between;
@@ -1339,10 +1343,9 @@ section{
                             }
                         }
                         & .bottomTaskCont{
-                            max-height: 0;
+                            height: 0;
                             overflow: hidden;
-                            transition: 0.5s;
-                            transition-timing-function: linear;
+                            transition: height 0.5s ease;
                             & h1{
                                 font-size: 15px;
                                 text-align: left;
@@ -1354,7 +1357,7 @@ section{
                         } 
                         &.open {
                             & .bottomTaskCont{
-                                max-height: 150px;
+                                // height: fit-content;
                                 margin: 15px 0 0;
                                 border-top: 1px solid var(--primary-color);
                                 padding-top: 15px;

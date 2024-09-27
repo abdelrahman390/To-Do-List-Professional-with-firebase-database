@@ -470,12 +470,10 @@ section main .tasks-container .task-card .container .task .upperTaskCont .cont i
   font-size: 30px;
 }
 section main .tasks-container .task-card .container .task .bottomTaskCont {
-  max-height: 0;
+  height: 0;
   overflow: hidden;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
-  -webkit-transition-timing-function: linear;
-          transition-timing-function: linear;
+  -webkit-transition: height 0.5s ease;
+  transition: height 0.5s ease;
 }
 section main .tasks-container .task-card .container .task .bottomTaskCont h1 {
   font-size: 15px;
@@ -486,7 +484,6 @@ section main .tasks-container .task-card .container .task .bottomTaskCont h1.com
   margin-top: 2px;
 }
 section main .tasks-container .task-card .container .task.open .bottomTaskCont {
-  max-height: 150px;
   margin: 15px 0 0;
   border-top: 1px solid var(--primary-color);
   padding-top: 15px;
@@ -1542,6 +1539,10 @@ section main .tasks-container .task-card {
   max-width: 250px;
   width: 100%;
 }
+section main .tasks-container .task-card[data-status=complete] .title {
+  z-index: 2;
+  opacity: 0.5;
+}
 section main .tasks-container .task-card[data-status=complete].on-edit::before {
   width: 0 !important;
   height: 0 !important;
@@ -1703,7 +1704,7 @@ section main .tasks-container .task-card .container {
   transition: height 0.5s ease;
 }
 section main .tasks-container .task-card .container .task {
-  padding: 20px 0;
+  padding: 20px 0 10px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1802,12 +1803,10 @@ section main .tasks-container .task-card .container .task .upperTaskCont .cont i
   font-size: 30px;
 }
 section main .tasks-container .task-card .container .task .bottomTaskCont {
-  max-height: 0;
+  height: 0;
   overflow: hidden;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
-  -webkit-transition-timing-function: linear;
-          transition-timing-function: linear;
+  -webkit-transition: height 0.5s ease;
+  transition: height 0.5s ease;
 }
 section main .tasks-container .task-card .container .task .bottomTaskCont h1 {
   font-size: 15px;
@@ -1818,7 +1817,6 @@ section main .tasks-container .task-card .container .task .bottomTaskCont h1.com
   margin-top: 2px;
 }
 section main .tasks-container .task-card .container .task.open .bottomTaskCont {
-  max-height: 150px;
   margin: 15px 0 0;
   border-top: 1px solid var(--primary-color);
   padding-top: 15px;
