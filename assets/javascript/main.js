@@ -104,6 +104,7 @@ async function getAllMessagesAsBlock() {
         allTasks[doc.id] = doc.data()
         sessionStorage.setItem("allTasks", JSON.stringify(allTasks))
         addTasksFromDataBase(doc.id, doc.data())
+        // console.log(doc.id, doc.data()) // working
     });
     sessionStorage.setItem("allTasks", JSON.stringify(allTasks))
     tasksMain()
@@ -349,39 +350,73 @@ function checkIfAllTasksAreDone(task){
     // console.log(task) //{"0": {}, "1": {}, "2": {}} every Task?
     let allTasksDone = true;
 
-    task.forEach(task => {
-        if (task.getAttribute("data-status") !== "complete") {
-            allTasksDone = false;
-        }
-    });
+    try{
+        task.forEach(task => {
+            if (task.getAttribute("data-status") !== "complete") {
+                allTasksDone = false;
+            }
+        });
+        // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-    let allTasks = JSON.parse(sessionStorage.getItem("allTasks"))
+        let allTasks = JSON.parse(sessionStorage.getItem("allTasks"))
 
-        if (allTasksDone) {
-            // Set opacity to 0.7
-
-            task[0].parentElement.parentElement.setAttribute("data-status", "complete")
-            let taskId = task[0].parentElement.parentElement.getAttribute("data-id");
-            let div = document.createElement("div");
-            div.classList = 'complete-date';
-            div.innerText = `completed at:   ${allTasks[taskId]['taskData']['completeDate']}`
-            task[0].parentElement.parentElement.appendChild(div)
-        } else {
-            // Set opacity to 1 and exit the loop
-            task[0].parentElement.parentElement.setAttribute("data-status", "false")
-            task[0].parentElement.parentElement.setAttribute("complete-date", 'not-completed')
-            if(task[0].parentElement.parentElement.querySelector(".complete-date") != null){
-                task[0].parentElement.parentElement.querySelector(".complete-date").remove()
-            } 
-        }
+        // console.log(task)
+        // console.log(allTasksDone)
+            if (allTasksDone) {
+                // Set opacity to 0.7
+                task[0].parentElement.parentElement.setAttribute("data-status", "complete")
+                let taskId = task[0].parentElement.parentElement.getAttribute("data-id");
+                let div = document.createElement("div");
+                div.classList = 'complete-date';
+                div.innerText = `completed at:   ${allTasks[taskId]['taskData']['completeDate']}`
+                task[0].parentElement.parentElement.appendChild(div)
+            } else {
+                // Set opacity to 1 and exit the loop
+                task[0].parentElement.parentElement.setAttribute("data-status", "false")
+                task[0].parentElement.parentElement.setAttribute("complete-date", 'not-completed')
+                if(task[0].parentElement.parentElement.querySelector(".complete-date") != null){
+                    task[0].parentElement.parentElement.querySelector(".complete-date").remove()
+                } 
+            }
+    }  catch (error) {
+        // console.error(`Error `, error);
+    }
 } 
 
 function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
-    let taskCars ;
-
+    // console.log('addTasksFromDataBase', id, taskData) // data = {}
+    let taskCars,
+    task;
     try {
-        // get data
-        let task = taskData['taskData'];
+        // handle data to list Not completed tasks fist
+        let taskCopy = taskData['taskData'],
+        tasksBeforeEdit = taskData['taskData'],
+        tasksAfterEdit = {},
+        numberForList = Object.keys(tasksBeforeEdit['data']).length + 1;
+
+        for (let i = 0; i < Object.keys(tasksBeforeEdit['data']).length; i++) {
+            if(tasksBeforeEdit['data'][i]['status'] === "complete"){
+                // console.log(id, 'task')
+                moveToLast(tasksBeforeEdit['data'], i);
+                // break;
+            } else {
+                task = taskCopy
+            }
+        }
+
+        function moveToLast(obj, key) {
+            if (obj.hasOwnProperty(key)) {
+                let value = obj[key];
+                delete obj[key];      // Remove the property
+                obj[numberForList] = value;     // Re-add the property to move it to the end
+                tasksAfterEdit = obj
+                // console.log(tasksAfterEdit)
+                numberForList++
+            }
+            taskCopy['data'] = tasksAfterEdit
+            task = taskCopy;
+        }
+
         function createTaskCard() {
             // Create the main task card div
             const taskCardDiv = document.createElement('div');
@@ -398,11 +433,12 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
             const containerDiv = document.createElement('div');
             containerDiv.className = 'container';
 
-            for (let i = 0; i < Object.keys(task['data']).length; i++) {
+            // console.log(task)
+            Object.keys(task['data']).forEach((key, index) => {
                 
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'task';
-                taskDiv.setAttribute('data-status', `${task['data'][i]["status"]}`);
+                taskDiv.setAttribute('data-status', `${task['data'][key]["status"]}`);
 
                 // Create the cont div
                 const contDiv = document.createElement('div');
@@ -411,17 +447,17 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
                 // Create the num div
                 const TaskNum = document.createElement('div');
                 TaskNum.className = 'num';
-                TaskNum.innerText = `${task['data'][i]["num"]} `;
+                TaskNum.innerText = `${index + 1}- `;
 
                 // Create the TaskData div
                 const TaskData = document.createElement('div');
                 TaskData.className = 'TaskData';
-                TaskData.innerText = ` ${task['data'][i]["content"]}`;
+                TaskData.innerText = ` ${task['data'][key]["content"]}`;
 
                 // Create the task-content input
                 const taskContentCheckBox = document.createElement('input');
                 taskContentCheckBox.type = 'checkbox';
-                task['data'][i]["status"] == 'complete' ? taskContentCheckBox.checked = true : taskContentCheckBox.checked = false;
+                task['data'][key]["status"] == 'complete' ? taskContentCheckBox.checked = true : taskContentCheckBox.checked = false;
 
                 const upperTaskCont = document.createElement("div")
                 upperTaskCont.classList = "upperTaskCont"
@@ -431,12 +467,12 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
 
                 const addedDate = document.createElement("h1")
                 addedDate.classList = "added_date"
-                addedDate.innerText = `Added date: ${task['data'][i]["added_date"]}`
+                addedDate.innerText = `Added date: ${task['data'][key]["added_date"]}`
 
                 const completedDate = document.createElement("h1")
                 completedDate.classList = "complete_date"
-                if (task['data'][i]["complete_date"] !== undefined){
-                    completedDate.innerText = `Complete date: ${task['data'][i]["complete_date"]}`
+                if (task['data'][key]["complete_date"] !== undefined){
+                    completedDate.innerText = `Complete date: ${task['data'][key]["complete_date"]}`
                 }
 
                 containerDiv.appendChild(taskDiv);
@@ -449,7 +485,7 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
                 bottomTaskCont.appendChild(addedDate)
                 bottomTaskCont.appendChild(completedDate)
 
-            }
+            });
 
             // Create the task done alarm H2
             const DoneMessage = document.createElement('h2');
@@ -474,6 +510,7 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
                 tasksContainer.appendChild(taskCardDiv);
             }
             taskCars = taskCardDiv
+            // console.log(taskCardDiv.querySelectorAll(".task"))
             checkIfAllTasksAreDone(taskCardDiv.querySelectorAll(".task"));
         }
         createTaskCard();
