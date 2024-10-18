@@ -506,6 +506,7 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
                 tasksSetting()
                 handleEveryNestedTaskData()
                 tasksMain()
+                handleOpenAndCloseTasks()
             } else{
                 tasksContainer.appendChild(taskCardDiv);
             }
@@ -707,6 +708,7 @@ function tasksMain(){
                 handleTasksViewInPage()
                 addSettingToTasksBox()
                 tasksSetting()
+                handleOpenAndCloseTasks()
             })
 
             // when press cancel button 
@@ -900,14 +902,13 @@ function tasksSetting(){
         confirmDelete = settingButton.parentElement.querySelector(".task-card .trash  .settingBox .boxesCont .delete"),
         DeleteButton = settingButton.parentElement.querySelector(".task-card .trash  .settingBox .delete"),
         taskContainer = settingButton.parentElement.parentElement.querySelector(".container"),
-        editButton = settingButton.parentElement.parentElement.querySelector(".trash  .settingBox .edit"),
+        editButton = settingButton.parentElement.parentElement.querySelectorAll(".trash  .settingBox .edit"),
         TaskCard = settingButton.parentElement.parentElement,
         TitleDiv = settingButton.parentElement.parentElement.querySelector(".title"),
         containerDiv = settingButton.parentElement.parentElement.querySelectorAll(".container .task"),
         dateDiv = settingButton.parentElement.parentElement.querySelector(".date "),
         deleteImg = settingButton.parentElement.parentElement.querySelector(".deleteImg"),
         EditedTaskDate = null;
-
 
         settingButton.addEventListener("click", function(){
             settingButton.parentElement.classList.toggle('open');
@@ -943,256 +944,260 @@ function tasksSetting(){
                 let editedTasks = settingButton.parentElement.parentElement;
                 let cancelButton = null;
 
-                editButton.addEventListener("click", function() {
+                editButton.forEach(element => {
+                    element.addEventListener("click", function() {
 
-                    settingButton.parentElement.style = "display: none"
-                    settingButton.parentElement.parentElement.querySelector(".container").classList.add("open")
-
-                    let taskCard = editButton.parentElement.parentElement.parentElement;
-                    taskCard.setAttribute("edit", "true")
-
-                    if(settingButton.parentElement.parentElement.getAttribute("data-status") == 'complete'){
-                        settingButton.parentElement.parentElement.classList.add("on-edit")
-                    }
-
-                    function editTaskHandle() {
-
-                        settingButton.parentElement.classList.toggle('open');
-                        editedTasks.style.opacity = "1"
-
-                        let titleClass = TitleDiv.className;
-                        let titleValue = TitleDiv.innerText;
-
-                        let titleInput = document.createElement("input");
-                        titleInput.classList.add(`${titleClass}`);
-                        titleInput.value = titleValue;
-
-                        let DoneButton = document.createElement("button");
-                        DoneButton.classList.add('DoneButton');
-                        DoneButton.innerText = "Save Edit";
-
-                        cancelButton = document.createElement("button");
-                        cancelButton.classList.add('cancel-button');
-                        cancelButton.innerText = "Cancel";
-
-                        let addTaskButton = document.createElement("button");
-                        addTaskButton.classList.add('addTaskButton');
-                        addTaskButton.innerText = "Add Task";
-
-                        let buttonsDiv = document.createElement("div");
-                        buttonsDiv.classList.add('buttons-div');
-
-                        buttonsDiv.appendChild(cancelButton);
-                        buttonsDiv.appendChild(DoneButton);
-
-                        TaskCard.appendChild(buttonsDiv);
-                        
-                        TitleDiv.replaceWith(titleInput);
-                        dateDiv.replaceWith(buttonsDiv);
-                        TaskCard.insertBefore(addTaskButton , buttonsDiv)
-
-                        function HandleTasksArrangeWhenDeleteOne() {
-                            taskContainer.querySelectorAll(".task").forEach((element ,index)=> {
-                                element.querySelector(".cont").querySelector(".num").innerHTML = `${index + 1} -` 
-                            });
+                        settingButton.parentElement.style = "display: none"
+                        settingButton.parentElement.parentElement.querySelector(".container").classList.add("open")
+    
+                        let taskCard = element.parentElement.parentElement.parentElement;
+                        taskCard.setAttribute("edit", "true")
+    
+                        if(settingButton.parentElement.parentElement.getAttribute("data-status") == 'complete'){
+                            settingButton.parentElement.parentElement.classList.add("on-edit")
                         }
-
-                        let tasksNum = containerDiv.length;
-                        addTaskButton.addEventListener("click", function() {
-                            tasksNum ++ 
-
-                            // Create the task div
-                            const taskDiv = document.createElement('div');
-                            taskDiv.className = 'task';
-                            taskDiv.setAttribute("data-status" , 'false')
-
-                            // Create the cont div
-                            const contDiv = document.createElement('div');
-                            contDiv.className = 'cont';
-
-                            const TaskNum = document.createElement('div');
-                            TaskNum.className = 'num';
-                            TaskNum.innerText = `${tasksNum} - `
-
-                            const TaskData = document.createElement('input');
-                            TaskData.className = 'TaskData';
-                            TaskData.placeholder = '...'
-
-                            const deleteTaskImg = document.createElement('img');
-                            deleteTaskImg.className = 'deleteImg';
-                            deleteTaskImg.src = 'assets/imgs/close.png'
-                            deleteImg = deleteTaskImg;
-
-                            const upperTaskCont = document.createElement('div');
-                            upperTaskCont.className = 'upperTaskCont';
-
-                            contDiv.appendChild(TaskNum)
-                            contDiv.appendChild(TaskData)
-                            upperTaskCont.appendChild(contDiv)
-                            upperTaskCont.appendChild(deleteTaskImg)
-                            taskDiv.appendChild(upperTaskCont)
+    
+                        function editTaskHandle() {
+    
+                            settingButton.parentElement.classList.toggle('open');
+                            editedTasks.style.opacity = "1"
+    
+                            let titleClass = TitleDiv.className;
+                            let titleValue = TitleDiv.innerText;
+    
+                            let titleInput = document.createElement("input");
+                            titleInput.classList.add(`${titleClass}`);
+                            titleInput.value = titleValue;
+    
+                            let DoneButton = document.createElement("button");
+                            DoneButton.classList.add('DoneButton');
+                            DoneButton.innerText = "Save Edit";
+    
+                            cancelButton = document.createElement("button");
+                            cancelButton.classList.add('cancel-button');
+                            cancelButton.innerText = "Cancel";
+    
+                            let addTaskButton = document.createElement("button");
+                            addTaskButton.classList.add('addTaskButton');
+                            addTaskButton.innerText = "Add Task";
+    
+                            let buttonsDiv = document.createElement("div");
+                            buttonsDiv.classList.add('buttons-div');
+    
+                            buttonsDiv.appendChild(cancelButton);
+                            buttonsDiv.appendChild(DoneButton);
+    
+                            TaskCard.appendChild(buttonsDiv);
                             
-                            taskContainer.appendChild(taskDiv)
-
-                            // ################## delete new added tasks ################
-                            deleteTaskImg.addEventListener("click", function() {
-                                deleteTaskImg.parentElement.parentElement.remove();
-                                tasksNum--
-                                HandleTasksArrangeWhenDeleteOne()
-                            })
-                            let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
-                            containerHeight = container.scrollHeight ; 
-        
-                            if(container.classList.contains("open")) {
-                                container.style.height = `${containerHeight}px`
-                            } 
-
-                            handleEveryNestedTaskData() 
-                        })
-
-                        containerDiv.forEach(element => {
-                            let taskClass = element.querySelector(".cont").children[1].className;
-                            let taskValue = element.querySelector(".cont").children[1].innerText;
-                            let taskInput = document.createElement("input");
-                            taskInput.classList.add(`${taskClass}`);
-                            taskInput.value = taskValue;
-                            element.querySelector(".cont").children[1].replaceWith(taskInput);
-
-                            let deleteTaskImg = document.createElement('img');
-                            deleteTaskImg.className = 'deleteImg';
-                            deleteTaskImg.src = 'assets/imgs/close.png'
-                            deleteImg = deleteTaskImg;
-
-                            element.querySelector(".cont").parentElement.lastChild.replaceWith(deleteTaskImg)
-
-                            // ################## delete current task ################
-                            deleteTaskImg.addEventListener("click", function() {
-                                console.log(deleteTaskImg)
-                                element.querySelector(".cont").parentElement.parentElement.remove();
-                                tasksNum--
-                                HandleTasksArrangeWhenDeleteOne()
-
-                                let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
-                                allTasksHeight = container.parentElement.querySelectorAll(".task"),
-                                containerHeight = 0;
+                            TitleDiv.replaceWith(titleInput);
+                            dateDiv.replaceWith(buttonsDiv);
+                            TaskCard.insertBefore(addTaskButton , buttonsDiv)
+    
+                            function HandleTasksArrangeWhenDeleteOne() {
+                                taskContainer.querySelectorAll(".task").forEach((element ,index)=> {
+                                    element.querySelector(".cont").querySelector(".num").innerHTML = `${index + 1} -` 
+                                });
+                            }
+    
+                            let tasksNum = containerDiv.length;
+                            addTaskButton.addEventListener("click", function() {
+                                tasksNum ++ 
+    
+                                // Create the task div
+                                const taskDiv = document.createElement('div');
+                                taskDiv.className = 'task';
+                                taskDiv.setAttribute("data-status" , 'false')
+    
+                                // Create the cont div
+                                const contDiv = document.createElement('div');
+                                contDiv.className = 'cont';
+    
+                                const TaskNum = document.createElement('div');
+                                TaskNum.className = 'num';
+                                TaskNum.innerText = `${tasksNum} - `
+    
+                                const TaskData = document.createElement('input');
+                                TaskData.className = 'TaskData';
+                                TaskData.placeholder = '...'
+    
+                                const deleteTaskImg = document.createElement('img');
+                                deleteTaskImg.className = 'deleteImg';
+                                deleteTaskImg.src = 'assets/imgs/close.png'
+                                deleteImg = deleteTaskImg;
+    
+                                const upperTaskCont = document.createElement('div');
+                                upperTaskCont.className = 'upperTaskCont';
+    
+                                contDiv.appendChild(TaskNum)
+                                contDiv.appendChild(TaskData)
+                                upperTaskCont.appendChild(contDiv)
+                                upperTaskCont.appendChild(deleteTaskImg)
+                                taskDiv.appendChild(upperTaskCont)
+                                
+                                taskContainer.appendChild(taskDiv)
+    
+                                // ################## delete new added tasks ################
+                                deleteTaskImg.addEventListener("click", function() {
+                                    deleteTaskImg.parentElement.parentElement.remove();
+                                    tasksNum--
+                                    HandleTasksArrangeWhenDeleteOne()
+                                })
+                                let container = element.parentElement.parentElement.parentElement.querySelector(".container"),
+                                containerHeight = container.scrollHeight ; 
             
                                 if(container.classList.contains("open")) {
-                                    allTasksHeight.forEach(element => {
-                                        containerHeight += element.scrollHeight
-                                    });
-                                    container.style.height = `${containerHeight}px` 
+                                    container.style.height = `${containerHeight}px`
                                 } 
-                                let resizeObserver = new ResizeObserver(entries => {
-                                    for (let entry of entries) {
-                                        // let height = entry.contentRect.height;
-                                        handleTasksViewInPage()
-                                    }
-                                });
-                                resizeObserver.observe(container.parentElement);
+    
+                                handleEveryNestedTaskData() 
                             })
-
-                        });
-
-                        let container = editButton.parentElement.parentElement.parentElement.querySelector(".container"),
-                        allTasksHeight = container.parentElement.querySelectorAll(".task"),
-                        containerHeight = 0;
     
-                        if(container.classList.contains("open")) {
-                            allTasksHeight.forEach(element => {
-                                console.log(containerHeight)
-                                containerHeight += element.scrollHeight
+                            containerDiv.forEach(element => {
+                                let taskClass = element.querySelector(".cont").children[1].className;
+                                let taskValue = element.querySelector(".cont").children[1].innerText;
+                                let taskInput = document.createElement("input");
+                                taskInput.classList.add(`${taskClass}`);
+                                taskInput.value = taskValue;
+                                element.querySelector(".cont").children[1].replaceWith(taskInput);
+    
+                                let deleteTaskImg = document.createElement('img');
+                                deleteTaskImg.className = 'deleteImg';
+                                deleteTaskImg.src = 'assets/imgs/close.png'
+                                deleteImg = deleteTaskImg;
+    
+                                element.querySelector(".cont").parentElement.lastChild.replaceWith(deleteTaskImg)
+    
+                                // ################## delete current task ################
+                                deleteTaskImg.addEventListener("click", function() {
+                                    console.log(deleteTaskImg)
+                                    element.querySelector(".cont").parentElement.parentElement.remove();
+                                    tasksNum--
+                                    HandleTasksArrangeWhenDeleteOne()
+    
+                                    let container = element.parentElement.parentElement.parentElement.querySelector(".container"),
+                                    allTasksHeight = container.parentElement.querySelectorAll(".task"),
+                                    containerHeight = 0;
+                
+                                    if(container.classList.contains("open")) {
+                                        allTasksHeight.forEach(element => {
+                                            containerHeight += element.scrollHeight
+                                        });
+                                        container.style.height = `${containerHeight}px` 
+                                    } 
+                                    let resizeObserver = new ResizeObserver(entries => {
+                                        for (let entry of entries) {
+                                            // let height = entry.contentRect.height;
+                                            handleTasksViewInPage()
+                                        }
+                                    });
+                                    resizeObserver.observe(container.parentElement);
+                                })
+    
                             });
-                            console.log(containerHeight)
-                            container.style.height = `${containerHeight}px` 
-                        } 
-                        let resizeObserver = new ResizeObserver(entries => {
-                            for (let entry of entries) {
-                                // let height = entry.contentRect.height;
-                                handleTasksViewInPage()
-                            }
-                        });
-                        resizeObserver.observe(container.parentElement);
-
-                    }
-                    editTaskHandle()
-
-                    function SaveEditedTask() {
-                        let DoneButtonB = settingButton.parentElement.parentElement.querySelector(".DoneButton");
-
-                        DoneButtonB.addEventListener("click", function() {
-                            let num = null,
-                                taskContent = null,
-                                status = null,
-                                taskData = {},
-                                id ,
-                                allTasksData = {};
     
-                            settingButton.parentElement.parentElement.querySelectorAll(".task").forEach((element , index) => {
-
-                                id = element.parentElement.parentElement.getAttribute("data-id");
-                                let alreadyExistTasks = JSON.parse(sessionStorage.getItem("allTasks"))[id]['taskData']['data']
-                                let alreadyExistTasksLength = Object.keys(alreadyExistTasks).length;
-                                let addedDate ;
-
-                                if(index < alreadyExistTasksLength){
-                                    addedDate = alreadyExistTasks[index]["added_date"]
-                                } else{
-                                    let now = new Date();
-                                    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-                                    let NewAddedDate = now.toLocaleString('en-US', options);
-                                    addedDate = NewAddedDate;
+                            let container = element.parentElement.parentElement.parentElement.querySelector(".container"),
+                            allTasksHeight = container.parentElement.querySelectorAll(".task"),
+                            containerHeight = 0;
+        
+                            if(container.classList.contains("open")) {
+                                allTasksHeight.forEach(element => {
+                                    // console.log(containerHeight)
+                                    containerHeight += element.scrollHeight
+                                });
+                                // console.log(containerHeight)
+                                container.style.height = `${containerHeight}px` 
+                            } 
+                            let resizeObserver = new ResizeObserver(entries => {
+                                for (let entry of entries) {
+                                    // let height = entry.contentRect.height;
+                                    handleTasksViewInPage()
                                 }
-
-                                num = `${index + 1} -`;
-                                taskContent = element.querySelector(".cont").querySelector("input").value
-                                status = element.getAttribute("data-status");
-
-                                if(alreadyExistTasks[index] === undefined){
-                                    taskData = {num: num , content: taskContent, "status": `${status}`, "added_date": addedDate}
-                                } else {
-                                    if (alreadyExistTasks[index]['complete_date'] == undefined){
+                            });
+                            resizeObserver.observe(container.parentElement);
+    
+                        }
+                        editTaskHandle()
+    
+                        function SaveEditedTask() {
+                            let DoneButtonB = settingButton.parentElement.parentElement.querySelector(".DoneButton");
+    
+                            DoneButtonB.addEventListener("click", function() {
+                                let num = null,
+                                    taskContent = null,
+                                    status = null,
+                                    taskData = {},
+                                    id ,
+                                    allTasksData = {};
+        
+                                settingButton.parentElement.parentElement.querySelectorAll(".task").forEach((element , index) => {
+    
+                                    id = element.parentElement.parentElement.getAttribute("data-id");
+                                    let alreadyExistTasks = JSON.parse(sessionStorage.getItem("allTasks"))[id]['taskData']['data']
+                                    let alreadyExistTasksLength = Object.keys(alreadyExistTasks).length;
+                                    let addedDate ;
+    
+                                    if(index < alreadyExistTasksLength){
+                                        addedDate = alreadyExistTasks[index]["added_date"]
+                                    } else{
+                                        let now = new Date();
+                                        const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                                        let NewAddedDate = now.toLocaleString('en-US', options);
+                                        addedDate = NewAddedDate;
+                                    }
+    
+                                    num = `${index + 1} -`;
+                                    taskContent = element.querySelector(".cont").querySelector("input").value
+                                    status = element.getAttribute("data-status");
+    
+                                    if(alreadyExistTasks[index] === undefined){
                                         taskData = {num: num , content: taskContent, "status": `${status}`, "added_date": addedDate}
                                     } else {
-                                        let completeDate = alreadyExistTasks[index]['complete_date']
-                                        taskData = {num: num , content: taskContent, "status": `${status}`, "added_date": addedDate, "complete_date": completeDate}
+                                        if (alreadyExistTasks[index]['complete_date'] == undefined){
+                                            taskData = {num: num , content: taskContent, "status": `${status}`, "added_date": addedDate}
+                                        } else {
+                                            let completeDate = alreadyExistTasks[index]['complete_date']
+                                            taskData = {num: num , content: taskContent, "status": `${status}`, "added_date": addedDate, "complete_date": completeDate}
+                                        }
                                     }
+                                    allTasksData[index] = taskData                                    
+                                });
+    
+                                let editedTask = {
+                                    title: `${editedTasks.querySelector(".title").value}`,
+                                    date: `${JSON.parse(sessionStorage.getItem("allTasks"))[id]["taskData"]["date"]}`,
+                                    data: allTasksData
                                 }
-                                allTasksData[index] = taskData                                    
-                            });
+    
+                                // error with sending data to database
+                                addTask(elementId, editedTask);
+                                let handledData = {
+                                    id: elementId,
+                                    taskData: editedTask
+                                }
+                                addTasksFromDataBase(elementId, handledData, taskCard)
+                                let allTasks = JSON.parse(sessionStorage.getItem("allTasks"));
+                                allTasks[elementId] = {
+                                    id: elementId,
+                                    taskData: editedTask
+                                }
+                                sessionStorage.setItem("allTasks" , JSON.stringify(allTasks))
+                                console.log(DoneButtonB.parentElement.parentElement)
+                            })
+                        }
+                        SaveEditedTask()
 
-                            let editedTask = {
-                                title: `${editedTasks.querySelector(".title").value}`,
-                                date: `${JSON.parse(sessionStorage.getItem("allTasks"))[id]["taskData"]["date"]}`,
-                                data: allTasksData
-                            }
+                        function cancelEdit() {
+                            cancelButton.addEventListener("click", function() {
+                                window.location.reload();
+                            })
+                        }
+                        cancelEdit()
+    
+                        handleEveryNestedTaskData()
+    
+                    })
+                });
 
-                            // error with sending data to database
-                            addTask(elementId, editedTask);
-                            let handledData = {
-                                id: elementId,
-                                taskData: editedTask
-                            }
-                            addTasksFromDataBase(elementId, handledData, taskCard)
-                            let allTasks = JSON.parse(sessionStorage.getItem("allTasks"));
-                            allTasks[elementId] = {
-                                id: elementId,
-                                taskData: editedTask
-                            }
-                            sessionStorage.setItem("allTasks" , JSON.stringify(allTasks))
-                        })
-                    }
-                    SaveEditedTask()
-
-                    function cancelEdit() {
-                        cancelButton.addEventListener("click", function() {
-                            window.location.reload();
-                        })
-                    }
-                    cancelEdit()
-
-                    handleEveryNestedTaskData()
-
-                })
             }
             editTask()
 
@@ -1269,53 +1274,63 @@ function handleTasksViewInPage() {
     // i++
 }
 
+let allNestedTasksThatAddedToItEvent = [];
 function handleEveryNestedTaskData() {
     let test = document.querySelectorAll(".tasks-container .task-card .container .task")
     test.forEach(element => {
-        element.addEventListener("click", function (){
-            element.classList.toggle("open") 
-
-            if (element.querySelector(".bottomTaskCont") !== null){
-                let taskHeight = element.querySelector(".bottomTaskCont").scrollHeight
-
-                if(element.classList.contains("open")) {
-                    element.querySelector(".bottomTaskCont").style.height = `${taskHeight - 10}px`
-                } else {
-                    element.querySelector(".bottomTaskCont").style.height = "0"
-                }
-
-                let resizeObserver = new ResizeObserver(entries => {
-                    for (let entry of entries) {
-                        // let height = entry.contentRect.height;
-                        let container = element.parentElement.parentElement.querySelector(".container"),
-                        allTasks = container.parentElement.querySelectorAll(".task"),
-                        allTasksHeight = 0; 
-                        allTasks.forEach(element => {
-                            allTasksHeight += element.scrollHeight
-                        });
-                        container.style.height = `${allTasksHeight}px`
+        if(!allNestedTasksThatAddedToItEvent.includes(element)){
+            allNestedTasksThatAddedToItEvent.push(element)
+            element.addEventListener("click", function (){
+                element.classList.toggle("open") 
+    
+                if (element.querySelector(".bottomTaskCont") !== null){
+                    let taskHeight = element.querySelector(".bottomTaskCont").scrollHeight
+    
+                    if(element.classList.contains("open")) {
+                        element.querySelector(".bottomTaskCont").style.height = `${taskHeight - 10}px`
+                    } else {
+                        element.querySelector(".bottomTaskCont").style.height = "0"
                     }
-                });
-                resizeObserver.observe(element);
+    
+                    let resizeObserver = new ResizeObserver(entries => {
+                        for (let entry of entries) {
+                            // let height = entry.contentRect.height;
+                            let container = element.parentElement.parentElement.querySelector(".container"),
+                            allTasks = container.parentElement.querySelectorAll(".task"),
+                            allTasksHeight = 0; 
+                            allTasks.forEach(element => {
+                                allTasksHeight += element.scrollHeight
+                            });
+                            container.style.height = `${allTasksHeight}px`
+                        }
+                    });
+                    resizeObserver.observe(element);
+                }
+            })
+    
+            // Create a ResizeObserver instance
+            let resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                // let height = entry.contentRect.height;
+                handleTasksViewInPage()
             }
-        })
-
-        // Create a ResizeObserver instance
-        let resizeObserver = new ResizeObserver(entries => {
-        for (let entry of entries) {
-            // let height = entry.contentRect.height;
-            handleTasksViewInPage()
+            });
+            resizeObserver.observe(element);
         }
-        });
-        resizeObserver.observe(element);
     });
 }
 
+let allTasksThatAddedToItEvent = [];
 function handleOpenAndCloseTasks() {
     let allTasksTitles =  document.querySelectorAll("section main .tasks-container .task-card .title ")
-    
+    // console.log(allTasksTitles)
     allTasksTitles.forEach(element => {
+        // to check that element didn`t have duplicate events
+        if(!allTasksThatAddedToItEvent.includes(element)){
+        allTasksThatAddedToItEvent.push(element)
+
         element.addEventListener("click", function() {
+            // console.log(element)
             let container = element.parentElement.querySelector(".container"),
             containerHeight = container.scrollHeight ; 
 
@@ -1325,10 +1340,6 @@ function handleOpenAndCloseTasks() {
             } else {
                 container.style.height = "0"
             }
-            // console.log(element.parentElement.querySelector("section main .tasks-container .task-card .container .task .upperTaskCont"))
-
-            // Create a ResizeObserver instance
-            // resizeObserverTwo.observe(element.parentElement.querySelector("section main .tasks-container .task-card .container .task .upperTaskCont"));
         })
         let resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
@@ -1338,5 +1349,7 @@ function handleOpenAndCloseTasks() {
         });
         // task-card
         resizeObserver.observe(element.parentElement);
+        }
     });
+
 }
