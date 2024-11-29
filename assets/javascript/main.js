@@ -775,23 +775,8 @@ function tasksMain() {
         };
 
         function addDataToDataBase() {
-          // function getRandomThreeDigitNumber() {
-          //     if  (localStorage.length == 0 ){
-          //         let idNum = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
-          //         return idNum;
-          //     } else {
-          //         for (let i = 0; i < localStorage.length; i++) {
-          //             let idNum = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
-          //             if(localStorage.key(i) != idNum){
-          //                 return idNum;
-          //             }
-          //         }
-          //     }
-          // }
-
-          // let randomNumber = getRandomThreeDigitNumber();
-          // addTask(String(randomNumber), NewTask);
           let timestamp = Date.now();
+          addTask(String(timestamp), NewTask);
           let handledData = {
             id: timestamp,
             taskData: NewTask,
