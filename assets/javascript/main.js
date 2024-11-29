@@ -791,12 +791,11 @@ function tasksMain() {
 
           // let randomNumber = getRandomThreeDigitNumber();
           // addTask(String(randomNumber), NewTask);
-          // let handledData = {
-          //     id: randomNumber,
-          //     taskData: NewTask
-          // }
-
           let timestamp = Date.now();
+          let handledData = {
+            id: timestamp,
+            taskData: NewTask,
+          };
 
           addTasksFromDataBase(timestamp, handledData);
 
