@@ -155,6 +155,9 @@ section main .slider .boxes button {
   padding: 30px;
   min-width: 150px;
 }
+section main .slider .boxes .add-task-AI {
+  background-color: #ff4557;
+}
 section main .slider span {
   width: 45px;
   height: 30px;
@@ -244,7 +247,8 @@ section main .tasks-container .task-card[data-status=complete] .DoneAlarm {
   border-radius: 5px;
   font-size: 17px;
 }
-section main .tasks-container .task-card button, section main .tasks-container .task-card input {
+section main .tasks-container .task-card button,
+section main .tasks-container .task-card input {
   cursor: pointer;
 }
 section main .tasks-container .task-card .trash {
@@ -658,6 +662,74 @@ section .overlay {
   gap: 40px;
   z-index: 2;
 }
+section .overlay .container.AI {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 350px;
+}
+section .overlay .add-task {
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  border: none;
+  border-radius: 5px;
+  padding: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  font-size: 17px;
+  border: navajowhite;
+  background-color: #ff4557;
+  padding: 30px;
+  min-width: 150px;
+  position: relative;
+}
+section .overlay .add-task.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: transparent;
+}
+section .overlay .add-task.loading::after {
+  content: "";
+  position: absolute;
+  right: 45%;
+  top: 45%;
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spin 0.6s linear infinite;
+          animation: spin 0.6s linear infinite;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: translateY(-50%) rotate(0deg);
+            transform: translateY(-50%) rotate(0deg);
+  }
+  to {
+    -webkit-transform: translateY(-50%) rotate(360deg);
+            transform: translateY(-50%) rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    -webkit-transform: translateY(-50%) rotate(0deg);
+            transform: translateY(-50%) rotate(0deg);
+  }
+  to {
+    -webkit-transform: translateY(-50%) rotate(360deg);
+            transform: translateY(-50%) rotate(360deg);
+  }
+}
 section .overlay .task-card {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -681,6 +753,33 @@ section .overlay .task-card {
   cursor: default;
   max-width: 250px;
   width: 100%;
+  max-height: 65vh;
+  overflow: auto;
+}
+section .overlay .task-card.AI {
+  max-width: unset;
+}
+section .overlay .task-card .AIDiv {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 15px;
+  border-bottom: 1px solid white;
+  padding-bottom: 10px;
+}
+section .overlay .task-card .AIDiv h3 {
+  color: white;
+}
+section .overlay .task-card .AIDiv input {
+  outline: none;
+  border: none;
+  padding: 5px;
+  border-radius: 3px;
+  height: 25px;
 }
 section .overlay .task-card .container {
   color: white;
@@ -689,6 +788,9 @@ section .overlay .task-card .container {
   font-size: 16px;
   font-weight: 600;
   text-align: right;
+}
+section .overlay .task-card .container.AI {
+  width: 350px;
 }
 section .overlay .task-card .container .task {
   padding: 20px 0;
@@ -809,6 +911,9 @@ section .overlay .task-card .title {
   text-align: center;
   font-size: 23px;
   background-color: transparent;
+}
+section .overlay .task-card .title.AI {
+  width: calc(100% - 10px);
 }
 section .overlay .task-card input.title {
   border-bottom: 3px dotted var(--fourth-color);
@@ -1110,17 +1215,6 @@ body {
   height: 120px;
   -webkit-animation: spin 0.5s linear infinite;
           animation: spin 0.5s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-  }
 }
 
 @keyframes spin {
@@ -1571,7 +1665,8 @@ section main .tasks-container .task-card[data-status=complete] .DoneAlarm {
   border-radius: 5px;
   font-size: 17px;
 }
-section main .tasks-container .task-card button, section main .tasks-container .task-card input {
+section main .tasks-container .task-card button,
+section main .tasks-container .task-card input {
   cursor: pointer;
 }
 section main .tasks-container .task-card .trash {

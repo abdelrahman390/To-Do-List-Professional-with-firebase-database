@@ -121,6 +121,7 @@ async function getAllMessagesAsBlock() {
 		allTasks[doc.id] = doc.data();
 		sessionStorage.setItem("allTasks", JSON.stringify(allTasks));
 		addTasksFromDataBase(doc.id, doc.data());
+		console.log("firebase", doc.id, doc.data());
 		// console.log(doc.id, doc.data()) // working
 	});
 	sessionStorage.setItem("allTasks", JSON.stringify(allTasks));
@@ -471,6 +472,7 @@ function checkIfAllTasksAreDone(task) {
 function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
 	// console.log('addTasksFromDataBase', id, taskData) // data = {}
 	let taskCars, task;
+	// console.log("test", taskData);
 	try {
 		// handle data to list Not completed tasks fist
 		let taskCopy = taskData["taskData"],
@@ -487,7 +489,6 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
 				task = taskCopy;
 			}
 		}
-
 		function moveToLast(obj, key) {
 			if (obj.hasOwnProperty(key)) {
 				let value = obj[key];
@@ -597,6 +598,10 @@ function addTasksFromDataBase(id, taskData, oldTasksAfterEdit) {
 			taskCars = taskCardDiv;
 			// console.log(taskCardDiv.querySelectorAll(".task"))
 			checkIfAllTasksAreDone(taskCardDiv.querySelectorAll(".task"));
+			setTimeout(() => {
+				title.click();
+			}, 500);
+			console.log(title);
 		}
 		createTaskCard();
 	} catch (error) {
@@ -613,6 +618,70 @@ function tasksMain() {
 		} else {
 			var addTaskButton = document.querySelector("section .add-task");
 		}
+		var addAITaskButton = document.querySelector("section .add-task-AI");
+
+		addAITaskButton.addEventListener("click", function clickHandler() {
+			slider.classList.remove("open");
+			let overlay = document.createElement("div");
+			overlay.className = "overlay";
+
+			// Create the main task card div
+			const taskCardDiv = document.createElement("div");
+			taskCardDiv.className = "task-card";
+			taskCardDiv.classList.add("AI");
+
+			// Create the title input
+			const titleInput = document.createElement("input");
+			titleInput.classList.add("title");
+			titleInput.classList.add("AI");
+			titleInput.placeholder = "Task to generate";
+
+			// Create the container div
+			const containerDiv = document.createElement("div");
+			containerDiv.classList.add("container");
+			containerDiv.classList.add("AI");
+			// containerDiv.className = "AI";
+
+			const addTaskButton = document.createElement("button");
+			// addTaskButton.classList.add("loading");
+			addTaskButton.classList.add("add-task", "AI");
+			addTaskButton.textContent = "Generate";
+
+			let cancelButton = document.createElement("button");
+			cancelButton.className = "cancel-button";
+			cancelButton.innerHTML = "Cancel";
+
+			taskCardDiv.appendChild(titleInput);
+			containerDiv.appendChild(taskCardDiv);
+			containerDiv.appendChild(taskCardDiv);
+			overlay.appendChild(containerDiv);
+			overlay.appendChild(addTaskButton);
+			overlay.appendChild(cancelButton);
+			section.appendChild(overlay);
+
+			console.log("containerDiv", containerDiv);
+
+			// addTaskButton.onclick = function () {
+
+			// }
+			addTaskButton.addEventListener("click", function AddTaskHandleClick() {
+				addTaskButton.classList.add("loading");
+				let prompt = document.querySelector(".overlay .title.AI").value;
+				// console.log(prompt);
+				if (prompt.length > 5) {
+					// overlay.remove();
+					generateAITask(prompt);
+				}
+				addTaskButton.removeEventListener("click", AddTaskHandleClick);
+			});
+
+			// when press cancel button
+			cancelButton.addEventListener("click", function () {
+				overlay.remove();
+			});
+
+			addAITaskButton.removeEventListener("click", clickHandler);
+		});
 
 		addTaskButton.addEventListener("click", function () {
 			// if(window.innerWidth <= 600){
@@ -1638,22 +1707,111 @@ function handleOpenAndCloseTasks() {
 	});
 }
 
-async function main() {
-	const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: "Bearer sk-fe44fff1277d412ba37c05c1a3d0c7e4",
-		},
-		body: JSON.stringify({
-			model: "deepseek-chat",
-			messages: [{ role: "system", content: "You are a helpful assistant." }],
-		}),
-	});
+async function generateAITask(prompt) {
+	// console.log("request Done", prompt);
+	fetch(`http://192.168.1.5:8000//AI?prompt=${prompt}`)
+		.then((response) => {
+			if (!response.ok) {
+				// Handle HTTP errors (e.g., 400, 500)
+				console.error(`HTTP error! status: ${response.status}`);
+				throw new Error(`HTTP error! status: ${response.status}`); // Re-throw to be caught later
+				// Or: return Promise.reject(new Error(`HTTP error! status: ${response.status}`));
+			}
+			return response.json();
+		})
+		.then((data) => {
+			// console.log("Received data:", data.response);
+			// ####################################################   Create a study plan for me to start programming
+			let generateButton = document.querySelector(
+				"section .overlay .add-task "
+			);
+			generateButton.classList.remove("loading");
+			if (data.response == "Not Final") {
+				console.log("Received data 'Not Final':", data);
+				function addQuestions(questions) {
+					let title = document.querySelector(
+						"section .overlay .task-card .title.AI"
+					);
+					let taskCard = document.querySelector(
+						"section .overlay .task-card.AI"
+					);
+					if (title) {
+						title.remove();
+					}
+					taskCard.innerHTML = "";
 
-	const data = await response.json();
-	// console.log(data.choices[0].message.content);
-	console.log(data);
+					for (const property in questions) {
+						// Create the inner div
+						const innerDiv = document.createElement("div");
+						innerDiv.classList.add("AIDiv");
+
+						// Create the h2 element
+						const h3Element = document.createElement("h3");
+						h3Element.textContent = questions[property]; // Set the heading text
+
+						// Create the input element
+						const inputElement = document.createElement("input");
+						inputElement.type = "text"; // Set input type (e.g., "text", "number", etc.)
+						inputElement.placeholder = "Enter your answer"; // Set a placeholder (optional)
+
+						// Append the h2 and input to the inner div
+						innerDiv.appendChild(h3Element);
+						innerDiv.appendChild(inputElement);
+						taskCard.appendChild(innerDiv);
+					}
+					generateButton.onclick = function () {
+						generateButton.classList.add("loading");
+						// console.log("getEventListeners", getEventListeners(generateButton));
+						// generateAITask(prompt);
+						const taskCard = document.querySelector(".task-card.AI"); // Get the task card element
+
+						const qaPairs = []; // Array to store the question-answer strings
+						if (taskCard) {
+							const aiDivs = taskCard.querySelectorAll(".AIDiv"); // Get all the AIDiv elements inside
+
+							aiDivs.forEach((aiDiv) => {
+								const question = aiDiv.querySelector("h3").textContent; // Get the question from the h3
+								const input = aiDiv.querySelector("input"); // Get the input element
+								const answer = input.value; // Get the answer from the input (you might want to trim whitespace: input.value.trim())
+
+								const qaString = `${question} ${answer}`; // Combine question and answer
+
+								qaPairs.push(qaString); // Add to the array
+							});
+
+							const combinedString = qaPairs.join("\n"); // Join with newlines (or other separator)
+
+							// console.log(combinedString); // Output the combined string
+
+							// Or, if you want to do something else with the array of question-answer pairs:
+							console.log(qaPairs);
+							generateAITask(qaPairs);
+						} else {
+							console.error("Task card element not found.");
+						}
+					};
+				}
+				addQuestions(data.data);
+			} else {
+				console.log("Received data 'Final':", data);
+				let overlay = document.querySelector("section .overlay");
+				if (overlay) {
+					overlay.remove();
+				}
+				addTasksFromDataBase("4555545", { taskData: data.data, id: 5115115 });
+				tasksMain();
+				addSettingToTasksBox();
+				tasksSetting();
+				handleTasksViewInPage();
+				handleEveryNestedTaskData();
+				handleOpenAndCloseTasks();
+			}
+		})
+		.catch((error) => {
+			// Handle *any* error (network error, JSON parsing error, HTTP error)
+			console.error("Error fetching or parsing data:", error);
+			// Display an error message to the user:
+			// document.getElementById("error-message").textContent =
+			// 	"Error fetching or parsing data. Please try again later.";
+		});
 }
-
-main();
